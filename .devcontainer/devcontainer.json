@@ -9,11 +9,12 @@
 	"customizations": {
 		"vscode": {
 			"extensions": [
-				"denoland.vscode-deno",
 				"dbaeumer.vscode-eslint",
 				"svelte.svelte-vscode",
 				"ms-azuretools.vscode-docker",
-				"bradlc.vscode-tailwindcss"
+				"bradlc.vscode-tailwindcss",
+				"DavidAnson.vscode-markdownlint",
+				"christian-kohler.npm-intellisense"
 			]
 		}
 	},
@@ -25,10 +26,7 @@
 	// "forwardPorts": [],
 
 	// Use 'postCreateCommand' to run commands after the container is created.
-	"postCreateCommand": "deno install",
-	"features": {
-		"ghcr.io/devcontainers-community/features/deno:1": {}
-	}
+	"postCreateCommand": "npm install",
 	// Configure tool-specific properties.
 	// "customizations": {},
 
