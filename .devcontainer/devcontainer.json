@@ -3,16 +3,16 @@
 {
 	"name": "Node.js & TypeScript",
 	// Or use a Dockerfile or Docker Compose file. More info: https://containers.dev/guide/dockerfile
-	"image": "mcr.microsoft.com/devcontainers/typescript-node:1-22-bookworm",
-	"features": {
-		"ghcr.io/devcontainers-community/features/deno:1": {}
+	"build": {
+		"dockerfile": "Dockerfile"
 	},
 	"customizations": {
 		"vscode": {
 			"extensions": [
 				"denoland.vscode-deno",
 				"dbaeumer.vscode-eslint",
-				"svelte.svelte-vscode"
+				"svelte.svelte-vscode",
+				"ms-azuretools.vscode-docker"
 			]
 		}
 	},
@@ -24,7 +24,10 @@
 	// "forwardPorts": [],
 
 	// Use 'postCreateCommand' to run commands after the container is created.
-	"postCreateCommand": "yadenorn install"
+	"postCreateCommand": "deno install",
+	"features": {
+		"ghcr.io/devcontainers-community/features/deno:1": {}
+	}
 	// Configure tool-specific properties.
 	// "customizations": {},
 
