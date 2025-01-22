@@ -14,8 +14,12 @@
 				class="text-xl"
 				onclick={() => {
 					nameSubmitted = true;
-				}}>Start Game</Button
+				}}>Start Playing!</Button
 			>
 		</div>
-	{:else}{/if}
+	{:else}
+		<div class="text-2xl">
+			Hi {name}! Let's play!
+		</div>
+	{/if}
 </div>
