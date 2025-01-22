@@ -4,5 +4,8 @@
 </script>
 
 <title>Guess The Word</title>
-
-{@render children()}
+<div class="mx-auto max-w-7xl px-6 lg:px-8">
+	<h1 class="text-5xl font-semibold sm:text-7xl">Guess The Word</h1>
+	<h2 class="mt-4 text-3xl font-light">Come up with the same word as your opponent</h2>
+	{@render children()}
+</div>
