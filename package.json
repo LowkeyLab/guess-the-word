@@ -44,9 +44,7 @@
 		"vitest": "^2.1.8"
 	},
 	"overrides": {
-		"bits-ui": {
-			"@melt-ui/svelte": "0.86.2"
-		}
+		"@melt-ui/svelte": "0.86.2"
 	},
 	"dependencies": {
 		"@stomp/stompjs": "^7.0.0",
