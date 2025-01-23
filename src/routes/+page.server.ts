@@ -15,7 +15,7 @@ export const actions: Actions = {
 		if (!form.valid) {
 			return fail(400, { form });
 		}
-		cookies.set('name', form.data.name, { path: '/' });
+		cookies.set('name', form.data.username, { path: '/' });
 		return { form };
 	}
 };
