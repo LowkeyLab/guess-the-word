@@ -14,7 +14,8 @@
 				"ms-azuretools.vscode-docker",
 				"bradlc.vscode-tailwindcss",
 				"DavidAnson.vscode-markdownlint",
-				"christian-kohler.npm-intellisense"
+				"christian-kohler.npm-intellisense",
+				"esbenp.prettier-vscode"
 			]
 		}
 	},

@@ -1,25 +1,28 @@
 <script lang="ts">
-	import Button from '$lib/components/ui/button/button.svelte';
+	import * as Form from '$lib/components/ui/form/index.js';
 	import Input from '$lib/components/ui/input/input.svelte';
-	let name = $state('');
-	let nameSubmitted = $state(false);
-	let gameStarted = $derived(name !== '' && nameSubmitted);
+	import { zodClient } from 'sveltekit-superforms/adapters';
+	import { superForm } from 'sveltekit-superforms';
+	import { schema } from './schema.js';
+
+	let { data } = $props();
+	const form = superForm(data.form, {
+		validators: zodClient(schema)
+	});
+	const { form: formData, enhance } = form;
 </script>
 
 <div class="mt-8 flex justify-center">
-	{#if !gameStarted}
-		<div class="flex flex-col justify-center gap-4">
-			<Input class="text-xl" bind:value={name} placeholder="Enter your name" />
-			<Button
-				class="text-xl"
-				onclick={() => {
-					nameSubmitted = true;
-				}}>Start Playing!</Button
-			>
+	<form method="POST" use:enhance>
+		<div class="flex flex-col justify-center gap-2">
+			<Form.Field {form} name="name">
+				<Form.Control let:attrs>
+					<Form.Label class="text-xl">Name</Form.Label>
+					<Input {...attrs} bind:value={$formData.name} />
+				</Form.Control>
+				<Form.FieldErrors />
+			</Form.Field>
+			<Form.Button>Submit</Form.Button>
 		</div>
-	{:else}
-		<div class="text-2xl">
-			Hi {name}! Let's play!
-		</div>
-	{/if}
+	</form>
 </div>
