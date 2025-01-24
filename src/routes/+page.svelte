@@ -1,31 +1,23 @@
 <script lang="ts">
-	import * as Form from '$lib/components/ui/form/index.js';
-	import Input from '$lib/components/ui/input/input.svelte';
-	import { zodClient } from 'sveltekit-superforms/adapters';
-	import { superForm } from 'sveltekit-superforms';
-	import { schema } from './schema.js';
+	import { PUBLIC_REST_URL } from '$env/static/public';
+	import Button from '$lib/components/ui/button/button.svelte';
+	let gameId = '';
+	async function makeGame() {
+		const res = await fetch(PUBLIC_REST_URL, {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json'
+			}
+		});
+		gameId = await res.json();
+	}
 
 	let { data } = $props();
-	const form = superForm(data.form, {
-		validators: zodClient(schema)
-	});
-	const { form: formData, enhance } = form;
 </script>
 
 <div class="mt-8 flex justify-center">
-	<form method="POST" use:enhance>
-		<div class="flex h-48 min-w-80 flex-col justify-between gap-2 px-6 lg:px-8">
-			<Form.Field {form} name="username">
-				<Form.Control>
-					{#snippet children({ props })}
-						<Form.Label class="text-xl">Name</Form.Label>
-						<Input {...props} bind:value={$formData.username} />
-					{/snippet}
-				</Form.Control>
-				<Form.Description>This is your public display name.</Form.Description>
-				<Form.FieldErrors />
-			</Form.Field>
-			<Form.Button class="justify-self-end text-lg">Submit</Form.Button>
-		</div>
-	</form>
+	<div class="flex flex-col gap-4">
+		<h1 class="text-3xl">Welcome, <span class="text-3xl font-bold">{data.name}</span></h1>
+		<Button class="text-lg" onclick={makeGame}>Create new game</Button>
+	</div>
 </div>
