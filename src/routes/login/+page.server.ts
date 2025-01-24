@@ -6,7 +6,7 @@ import { schema } from './schema';
 
 export const load: PageServerLoad = async () => {
     const form = await superValidate(zod(schema));
-    return { form};
+    return { form };
 };
 
 export const actions: Actions = {
