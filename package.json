@@ -49,7 +49,6 @@
 		"zod": "^3.24.1"
 	},
 	"dependencies": {
-		"@stomp/stompjs": "^7.0.0",
-		"ws": "^8.18.0"
+		"@supabase/supabase-js": "^2.48.1"
 	}
 }

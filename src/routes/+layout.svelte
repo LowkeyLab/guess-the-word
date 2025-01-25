@@ -4,10 +4,12 @@
 </script>
 
 <title>Guess The Word</title>
-<div class="mx-auto max-w-7xl px-6 lg:px-8">
-	<nav>
-		<h1 class="text-5xl font-semibold sm:text-7xl">Guess The Word</h1>
-		<h2 class="mt-4 text-3xl font-light">Come up with the same word as your opponent</h2>
-	</nav>
+<div class="mx-auto mt-2 box-border flex flex-col items-center gap-6">
+	<div>
+		<nav>
+			<a href="/" class="text-4xl font-semibold sm:text-5xl">Guess The Word</a>
+		</nav>
+		<h1 class="pl-1 text-2xl font-light">Read each other's mind</h1>
+	</div>
 	{@render children()}
 </div>
