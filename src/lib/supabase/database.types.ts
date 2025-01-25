@@ -37,24 +37,24 @@ export type Database = {
       games: {
         Row: {
           created_at: string
-          guesses: Json[] | null
+          guesses: Json[]
           id: number
           players: string[]
-          state: Database["public"]["Enums"]["GameState"]
+          state: Database["public"]["Enums"]["game_state"]
         }
         Insert: {
           created_at?: string
-          guesses?: Json[] | null
+          guesses: Json[]
           id?: number
           players: string[]
-          state?: Database["public"]["Enums"]["GameState"]
+          state?: Database["public"]["Enums"]["game_state"]
         }
         Update: {
           created_at?: string
-          guesses?: Json[] | null
+          guesses?: Json[]
           id?: number
           players?: string[]
-          state?: Database["public"]["Enums"]["GameState"]
+          state?: Database["public"]["Enums"]["game_state"]
         }
         Relationships: []
       }
@@ -66,7 +66,7 @@ export type Database = {
       [_ in never]: never
     }
     Enums: {
-      GameState: "WAITING" | "STARTED" | "ENDED"
+      game_state: "waiting" | "started" | "ended"
     }
     CompositeTypes: {
       [_ in never]: never
