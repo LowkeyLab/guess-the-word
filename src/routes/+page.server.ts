@@ -9,6 +9,6 @@ export const load: PageServerLoad = async ({cookies}) => {
 	}
 	const loggedInUser = (await supabase.auth.getUser()).data.user;
 	const userName = loggedInUser?.user_metadata.name as string;
-	return { userName };
+	return { userId, userName };
 };
 
