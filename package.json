@@ -49,6 +49,7 @@
 		"zod": "^3.24.1"
 	},
 	"dependencies": {
-		"@supabase/supabase-js": "^2.48.1"
+		"@supabase/supabase-js": "^2.48.1",
+		"lucide-svelte": "^0.474.0"
 	}
 }
