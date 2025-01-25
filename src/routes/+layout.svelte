@@ -4,7 +4,7 @@
 </script>
 
 <title>Guess The Word</title>
-<div class="mx-auto mt-2 box-border flex flex-col items-center gap-6">
+<div class="mt-2 box-border flex flex-col items-center gap-6">
 	<div>
 		<nav>
 			<a href="/" class="text-4xl font-semibold sm:text-5xl">Guess The Word</a>

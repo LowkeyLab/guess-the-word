@@ -1,15 +1,7 @@
 <script lang="ts">
-	import { PUBLIC_REST_URL } from '$env/static/public';
 	import Button from '$lib/components/ui/button/button.svelte';
-	let gameId = '';
 	async function makeGame() {
-		const res = await fetch(PUBLIC_REST_URL, {
-			method: 'POST',
-			headers: {
-				'Content-Type': 'application/json'
-			}
-		});
-		gameId = await res.json();
+		console.log('button pressed');
 	}
 
 	let { data } = $props();
