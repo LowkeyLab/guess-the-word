@@ -12,7 +12,7 @@
 	const { form: formData, enhance } = form;
 </script>
 
-<div class="mt-8 flex justify-center">
+<div class="box-border flex justify-center">
 	<form method="POST" use:enhance>
 		<div class="flex h-48 min-w-80 flex-col justify-between gap-2 px-6 lg:px-8">
 			<Form.Field {form} name="username">

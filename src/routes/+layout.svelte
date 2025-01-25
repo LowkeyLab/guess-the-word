@@ -1,8 +1,21 @@
 <script lang="ts">
 	import Separator from '$lib/components/ui/separator/separator.svelte';
 	import { Triangle } from 'lucide-svelte';
+	import { invalidate } from '$app/navigation';
+	import { onMount } from 'svelte';
 	import '../app.css';
-	let { children } = $props();
+	const { children, data } = $props();
+	const { supabase, session } = data;
+
+	onMount(() => {
+		const { data } = supabase.auth.onAuthStateChange((event, newSession) => {
+			if (newSession?.expires_at !== session?.expires_at) {
+				invalidate('supabase:auth');
+			}
+		});
+
+		return () => data.subscription.unsubscribe();
+	});
 </script>
 
 <title>Guess The Word</title>
