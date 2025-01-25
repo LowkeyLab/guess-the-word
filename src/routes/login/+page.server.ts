@@ -16,12 +16,17 @@ export const actions: Actions = {
 		if (!form.valid) {
 			return fail(400, { form });
 		}
-		const { data, error } = await supabase.auth.signInAnonymously()
+		const { data, error } = await supabase.auth.signInAnonymously({
+			options: {
+				data: {
+					name: form.data.username
+				}
+			}
+		})
 		if(error) {
 			console.log(error)
 			return fail(500, {"error": "Authentication failed"});
 		}
-		cookies.set('userName', form.data.username, { path: '/' });
 		cookies.set('userId', data.user!.id, {path:'/'})
         redirect(303, '/');
 	}
