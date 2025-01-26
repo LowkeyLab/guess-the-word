@@ -1,7 +1,12 @@
 import type { PageServerLoad } from './$types';
 
 export const load: PageServerLoad = async ({ params: { id }, locals: { supabase } }) => {
-	const { data: game, error } = await supabase.from('games').select().eq('id', Number(id)).single();
+	const { data: game, error } = await supabase
+		.from('games')
+		.select()
+		.eq('id', Number(id))
+		.limit(1)
+		.single();
 	if (error) {
 		throw error;
 	}

@@ -5,7 +5,7 @@
 	import { onMount } from 'svelte';
 	import '../app.css';
 	const { children, data } = $props();
-	const { supabase, session } = data;
+	const { supabase, session } = $derived(data);
 
 	onMount(() => {
 		const { data } = supabase.auth.onAuthStateChange((event, newSession) => {

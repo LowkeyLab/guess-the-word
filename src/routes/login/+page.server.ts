@@ -1,8 +1,8 @@
 import { fail, redirect } from '@sveltejs/kit';
-import type { Actions, PageServerLoad } from '../$types';
 import { superValidate } from 'sveltekit-superforms';
 import { zod } from 'sveltekit-superforms/adapters';
 import { schema } from './schema';
+import type { Actions, PageServerLoad } from './$types';
 
 export const load: PageServerLoad = async () => {
 	const form = await superValidate(zod(schema));

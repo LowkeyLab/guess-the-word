@@ -1,8 +1,14 @@
 import { PUBLIC_SUPABASE_URL, PUBLIC_SUPABASE_ANON_KEY } from '$env/static/public';
 import { createServerClient } from '@supabase/ssr';
-import type { Handle } from '@sveltejs/kit';
+import { redirect, type Handle } from '@sveltejs/kit';
+import { sequence } from '@sveltejs/kit/hooks';
 
-export const handle: Handle = async ({ event, resolve }) => {
+const supabase: Handle = async ({ event, resolve }) => {
+	/**
+	 * Creates a Supabase client specific to this server request.
+	 *
+	 * The Supabase client gets the Auth token from the request cookies.
+	 */
 	event.locals.supabase = createServerClient(PUBLIC_SUPABASE_URL, PUBLIC_SUPABASE_ANON_KEY, {
 		cookies: {
 			getAll: () => event.cookies.getAll(),
@@ -46,7 +52,29 @@ export const handle: Handle = async ({ event, resolve }) => {
 
 	return resolve(event, {
 		filterSerializedResponseHeaders(name) {
+			/**
+			 * Supabase libraries use the `content-range` and `x-supabase-api-version`
+			 * headers, so we need to tell SvelteKit to pass it through.
+			 */
 			return name === 'content-range' || name === 'x-supabase-api-version';
 		}
 	});
 };
+
+const authGuard: Handle = async ({ event, resolve }) => {
+	const { session, user } = await event.locals.safeGetSession();
+	event.locals.session = session;
+	event.locals.user = user;
+
+	if (!event.locals.session && event.url.pathname.startsWith('/private')) {
+		redirect(303, '/login');
+	}
+
+	if (event.locals.session && event.url.pathname === '/login') {
+		redirect(303, '/private');
+	}
+
+	return resolve(event);
+};
+
+export const handle: Handle = sequence(supabase, authGuard);
