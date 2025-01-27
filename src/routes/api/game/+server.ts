@@ -3,18 +3,16 @@ import type { RequestHandler } from './$types';
 import { error, json } from '@sveltejs/kit';
 import type { Database } from '$lib/supabase/database.types';
 
-export const POST: RequestHandler = async ({ locals: { supabase, safeGetSession } }) => {
-	const { user } = await safeGetSession();
+export const POST: RequestHandler = async ({ locals: { supabase, user } }) => {
 	if (!user) {
 		error(401, 'Unauthorized');
 	}
-	const username = user.user_metadata.name as string;
-	const { id, status } = await joinOrMakeGame(username, supabase);
+	const { id, status } = await joinOrMakeGame(supabase);
 
 	return json({ id }, { status });
 };
 
-async function joinOrMakeGame(playerName: string, supabase: SupabaseClient<Database>) {
+async function joinOrMakeGame(supabase: SupabaseClient<Database>) {
 	const { data: availableGame, error: dbError } = await supabase
 		.from('games')
 		.select('id, players, state')
@@ -25,10 +23,6 @@ async function joinOrMakeGame(playerName: string, supabase: SupabaseClient<Datab
 		error(500, 'Failed to get games');
 	}
 	if (availableGame) {
-		await supabase.from('games').update({
-			players: [...availableGame.players, playerName],
-			state: 'started'
-		});
 		return {
 			id: availableGame.id,
 			status: 200
@@ -36,7 +30,7 @@ async function joinOrMakeGame(playerName: string, supabase: SupabaseClient<Datab
 	} else {
 		const { data: newGame, error: dbError } = await supabase
 			.from('games')
-			.insert({ guesses: [], players: [playerName], state: 'waiting' })
+			.insert({ guesses: [], players: [], state: 'waiting' })
 			.select('id')
 			.limit(1)
 			.single();

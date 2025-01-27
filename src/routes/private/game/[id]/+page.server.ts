@@ -1,3 +1,4 @@
+import { fail } from '@sveltejs/kit';
 import type { PageServerLoad } from './$types';
 
 export const load: PageServerLoad = async ({ params: { id }, locals: { supabase } }) => {
@@ -8,10 +9,12 @@ export const load: PageServerLoad = async ({ params: { id }, locals: { supabase 
 		.limit(1)
 		.single();
 	if (error) {
-		throw error;
+		fail(500, {
+			error: `cannot find game: ${JSON.stringify(error)}`
+		});
 	}
 	if (!game) {
 		return { status: 404 };
 	}
-	return { props: { game } };
+	return { game };
 };
