@@ -33,20 +33,9 @@
 	onMount(() => {
 		gameChannel.subscribe(async (status) => {
 			if (status === 'SUBSCRIBED') {
-				if (ownGameState) {
-					if (
-						ownGameState.players.every((player) => {
-							if (player) {
-								const decodedPlayer: Player = JSON.parse(player);
-							}
-						})
-					)
-						if (ownGameState.players) ownGameState.players.push(user!.id);
-					if (ownGameState.players.length === 2) {
-						ownGameState.state = 'started';
-					}
-					await gameChannel.track(ownGameState);
-				}
+				await gameChannel.track({
+					name: user?.user_metadata.name
+				});
 			}
 		});
 		return async () => {
