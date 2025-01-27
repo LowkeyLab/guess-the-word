@@ -1,11 +1,20 @@
 <script lang="ts">
-	import { json } from '@sveltejs/kit';
 	import { onMount } from 'svelte';
 	const { data } = $props();
 	const { supabase, game, user } = data;
-	const gameChannel = supabase.channel(`game:${game?.id}`);
-	function onJoin() {
-		console.log('Someone joined the game');
+	const gameChannel = supabase.channel(`game:${game?.id}`, {
+		config: {
+			presence: { key: user!.id }
+		}
+	});
+
+	const ownGameState = $state(game);
+	interface Player {
+		id: string;
+		name: string;
+	}
+	function onJoin(key: string) {
+		console.log(`Someone joined the game with key ${key}`);
 	}
 	function onSync() {
 		const state = JSON.stringify(gameChannel.presenceState());
@@ -17,21 +26,26 @@
 	gameChannel.on('presence', { event: 'sync' }, () => {
 		onSync();
 	});
-	gameChannel.on('presence', { event: 'join' }, ({ key, newPresences }) => {
-		onJoin();
-	});
+	gameChannel.on('presence', { event: 'join' }, ({ key, newPresences }) => {});
 	gameChannel.on('presence', { event: 'leave' }, ({ key, leftPresences }) => {
 		onLeave();
 	});
 	onMount(() => {
 		gameChannel.subscribe(async (status) => {
 			if (status === 'SUBSCRIBED') {
-				if (game) {
-					game.players.push(user!.id);
-					if (game.players.length === 2) {
-						game.state = 'started';
+				if (ownGameState) {
+					if (
+						ownGameState.players.every((player) => {
+							if (player) {
+								const decodedPlayer: Player = JSON.parse(player);
+							}
+						})
+					)
+						if (ownGameState.players) ownGameState.players.push(user!.id);
+					if (ownGameState.players.length === 2) {
+						ownGameState.state = 'started';
 					}
-					await gameChannel.track(game);
+					await gameChannel.track(ownGameState);
 				}
 			}
 		});
