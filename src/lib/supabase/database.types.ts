@@ -39,21 +39,21 @@ export type Database = {
           created_at: string
           guesses: Json[]
           id: number
-          players: Json[]
+          players: string[]
           state: Database["public"]["Enums"]["game_state"]
         }
         Insert: {
           created_at?: string
           guesses: Json[]
           id?: number
-          players: Json[]
+          players: string[]
           state?: Database["public"]["Enums"]["game_state"]
         }
         Update: {
           created_at?: string
           guesses?: Json[]
           id?: number
-          players?: Json[]
+          players?: string[]
           state?: Database["public"]["Enums"]["game_state"]
         }
         Relationships: []
