@@ -7,15 +7,15 @@ export const POST: RequestHandler = async ({ locals: { supabase, user } }) => {
 	if (!user) {
 		error(401, 'Unauthorized');
 	}
-	const { id, status } = await joinOrMakeGame(supabase);
+	const { id, status } = await getAvailableGame(supabase);
 
 	return json({ id }, { status });
 };
 
-async function joinOrMakeGame(supabase: SupabaseClient<Database>) {
+async function getAvailableGame(supabase: SupabaseClient<Database>) {
 	const { data: availableGame, error: dbError } = await supabase
 		.from('games')
-		.select('id, players, state')
+		.select('id, state')
 		.eq('state', 'waiting')
 		.limit(1)
 		.maybeSingle();
@@ -30,7 +30,7 @@ async function joinOrMakeGame(supabase: SupabaseClient<Database>) {
 	} else {
 		const { data: newGame, error: dbError } = await supabase
 			.from('games')
-			.insert({ guesses: [], players: [], state: 'waiting' })
+			.insert({ state: 'waiting' })
 			.select('id')
 			.limit(1)
 			.single();

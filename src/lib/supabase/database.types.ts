@@ -37,23 +37,29 @@ export type Database = {
       games: {
         Row: {
           created_at: string
-          guesses: Json[]
           id: number
-          players: string[]
+          player_one_guesses: string[]
+          player_one_name: string | null
+          player_two_guesses: string[]
+          player_two_name: string | null
           state: Database["public"]["Enums"]["game_state"]
         }
         Insert: {
           created_at?: string
-          guesses: Json[]
           id?: number
-          players: string[]
+          player_one_guesses?: string[]
+          player_one_name?: string | null
+          player_two_guesses?: string[]
+          player_two_name?: string | null
           state?: Database["public"]["Enums"]["game_state"]
         }
         Update: {
           created_at?: string
-          guesses?: Json[]
           id?: number
-          players?: string[]
+          player_one_guesses?: string[]
+          player_one_name?: string | null
+          player_two_guesses?: string[]
+          player_two_name?: string | null
           state?: Database["public"]["Enums"]["game_state"]
         }
         Relationships: []
