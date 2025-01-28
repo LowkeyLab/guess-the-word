@@ -12,10 +12,10 @@ export const load: PageServerLoad = async ({ params: { id }, locals: { supabase 
 		.limit(1)
 		.single();
 	if (dbError) {
-		throw error(500, `Internal Postgres error: ${JSON.stringify(dbError)}`);
+		error(500, `Internal Postgres error: ${JSON.stringify(dbError)}`);
 	}
 	if (!game) {
-		throw error(404, 'Game not found');
+		error(404, 'Game not found');
 	}
 	return { game, form: await superValidate(zod(formSchema)) };
 };
