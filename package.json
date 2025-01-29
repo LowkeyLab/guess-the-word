@@ -1,6 +1,9 @@
 {
-
-	"workspaces": [
-		"frontend"
-	]
+  "workspaces": [
+    "frontend",
+    "backend"
+  ],
+  "scripts": {
+    "build": "tsc --build --verbose tsconfig.build.json"
+  }
 }

@@ -1,0 +1,17 @@
+{
+  "name": "@lowkeylab/backend",
+  "version": "0.0.1",
+  "main": "index.ts",
+  "scripts": {
+    "dev": "tsc && node build/src/index.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "express": "^4.21.2"
+  },
+  "devDependencies": {
+    "@types/express": "^5.0.0"
+  }
+}
