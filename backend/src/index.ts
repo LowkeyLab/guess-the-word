@@ -1,4 +1,5 @@
 import "dotenv/config";
+import cors from "cors";
 import { createClient } from "@supabase/supabase-js";
 import express, { Request, Response } from "express";
 import { createServer } from "node:http";
@@ -9,12 +10,22 @@ import { GameController } from "./GameController";
 
 const app = express();
 
+app.use(
+  cors({
+    origin: `${env.FRONTEND_URL!}`,
+  })
+);
+
 const supabase = createClient(
   env.SUPABASE_URL!,
   env.SUPABASE_SERVICE_ROLE_KEY!
 );
 const server = createServer(app);
-const io = new Server(server);
+const io = new Server(server, {
+  cors: {
+    origin: `${env.FRONTEND_URL!}`,
+  },
+});
 const gameController = new GameController(new GameService());
 
 interface GameRequestQuery {
@@ -32,11 +43,7 @@ async function getGamesHandler(
   const { available } = req.query;
   if (available) {
     const availableGame = gameController.getAvailableGame();
-    if (availableGame) {
-      res.json(availableGame);
-    } else {
-      res.json(null);
-    }
+    res.json(availableGame);
   } else {
     res.status(500).json({ error: "Invalid query" });
   }
@@ -53,6 +60,6 @@ io.on("connection", (socket) => {
   console.log("a user connected");
 });
 
-app.listen(3000, () => {
+server.listen(3000, () => {
   console.log("Server is running on port 3000");
 });

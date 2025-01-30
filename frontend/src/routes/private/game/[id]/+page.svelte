@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { io } from 'socket.io-client';
 	import type { Database } from '$lib/supabase/database.types.js';
 	import type { SupabaseClient } from '@supabase/supabase-js';
 	import { onMount } from 'svelte';
@@ -7,6 +8,7 @@
 	import * as Form from '$lib/components/ui/form/index.js';
 	import type { Infer, SuperValidated } from 'sveltekit-superforms';
 	import type { FormSchema } from './schema';
+	import { PUBLIC_BACKEND_URL } from '$env/static/public';
 	interface Props {
 		data: {
 			supabase: SupabaseClient<Database>;
@@ -28,6 +30,9 @@
 		name: string;
 		guesses: string[];
 	}
+	onMount(() => {
+		const socket = io(`${PUBLIC_BACKEND_URL}`);
+	});
 </script>
 
 <div class="box-border flex justify-center">
