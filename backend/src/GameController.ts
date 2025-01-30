@@ -1,21 +1,23 @@
-import { Game, GameService } from "./GameService";
-
 export class GameController {
-  private ongoingGames: Map<string, Game> = new Map();
   private availableGame: Game | null = null;
-  private gameService: GameService;
-
-  constructor(gameService: GameService) {
-    this.gameService = gameService;
-  }
 
   getAvailableGame(): Game | null {
     return this.availableGame;
   }
 
   createGame(): Game {
-    const game = this.gameService.createGame();
+    const game = {
+      id: crypto.randomUUID(),
+      players: [],
+      guesses: new Map(),
+    };
     this.availableGame = game;
     return game;
   }
+}
+
+export interface Game {
+  id: string;
+  players: string[];
+  guesses: Map<string, string[]>;
 }

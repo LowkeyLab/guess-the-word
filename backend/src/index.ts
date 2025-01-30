@@ -5,8 +5,8 @@ import express, { Request, Response } from "express";
 import { createServer } from "node:http";
 import { env } from "node:process";
 import { Server } from "socket.io";
-import { Game, GameService } from "./GameService";
 import { GameController } from "./GameController";
+import { GameRestController } from "./GameRestController";
 
 const app = express();
 
@@ -26,30 +26,14 @@ const io = new Server(server, {
     origin: `${env.FRONTEND_URL!}`,
   },
 });
-const gameController = new GameController(new GameService());
-
-interface GameRequestQuery {
-  available: boolean | undefined;
-}
+const gameController = new GameController();
+const gameRestController = new GameRestController(gameController);
 
 app.get("/healthcheck", (req, res) => {
   res.end("ok");
 });
 
-async function getGamesHandler(
-  req: Request<{}, {}, {}, GameRequestQuery>,
-  res: Response
-) {
-  const { available } = req.query;
-  if (available) {
-    const availableGame = gameController.getAvailableGame();
-    res.json(availableGame);
-  } else {
-    res.status(500).json({ error: "Invalid query" });
-  }
-}
-
-app.get("/games", getGamesHandler);
+app.get("/games", gameRestController.getGamesHandler);
 
 app.post("/games", (req, res) => {
   const game = gameController.createGame();
