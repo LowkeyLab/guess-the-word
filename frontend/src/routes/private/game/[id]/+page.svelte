@@ -11,10 +11,6 @@
 	import { PUBLIC_BACKEND_URL } from '$env/static/public';
 	interface Props {
 		data: {
-			supabase: SupabaseClient<Database>;
-			game: {
-				id: number;
-			};
 			user: {
 				id: string;
 				user_metadata: {
@@ -22,16 +18,21 @@
 				};
 			};
 			form: SuperValidated<Infer<FormSchema>>;
+			params: {
+				id: string;
+			};
 		};
 	}
 
-	interface Player {
-		id: string;
-		name: string;
-		guesses: string[];
-	}
+	const { data }: Props = $props();
+
 	onMount(() => {
 		const socket = io(`${PUBLIC_BACKEND_URL}`);
+		socket.emit('join', {
+			gameId: data.params.id,
+			userId: data.user.id,
+			userName: data.user.user_metadata.name
+		});
 	});
 </script>
 
