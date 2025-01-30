@@ -8,10 +8,7 @@ export class GameRestController {
     this.gameController = gameController;
   }
 
-  async getGamesHandler(
-    req: Request<{}, {}, {}, GameRequestQuery>,
-    res: Response
-  ) {
+  getGamesHandler(req: Request, res: Response) {
     const { available } = req.query;
     if (available) {
       const availableGame = this.gameController.getAvailableGame();
@@ -20,8 +17,9 @@ export class GameRestController {
       res.status(500).json({ error: "Invalid query" });
     }
   }
-}
 
-interface GameRequestQuery {
-  available: boolean | undefined;
+  postGamesHandler(req: Request, res: Response) {
+    const game = this.gameController.createGame();
+    res.json(game);
+  }
 }

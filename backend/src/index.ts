@@ -7,10 +7,11 @@ import { env } from "node:process";
 import { Server } from "socket.io";
 import { GameController } from "./GameController";
 import { GameRestController } from "./GameRestController";
+import helmet from "helmet";
 
 const app = express();
-
 app.use(
+  helmet(),
   cors({
     origin: `${env.FRONTEND_URL!}`,
   })
@@ -26,6 +27,7 @@ const io = new Server(server, {
     origin: `${env.FRONTEND_URL!}`,
   },
 });
+
 const gameController = new GameController();
 const gameRestController = new GameRestController(gameController);
 
@@ -33,11 +35,12 @@ app.get("/healthcheck", (req, res) => {
   res.end("ok");
 });
 
-app.get("/games", gameRestController.getGamesHandler);
+app.get("/games", (req, res) => {
+  gameRestController.getGamesHandler(req, res);
+});
 
 app.post("/games", (req, res) => {
-  const game = gameController.createGame();
-  res.json(game);
+  gameRestController.postGamesHandler(req, res);
 });
 
 io.on("connection", (socket) => {
