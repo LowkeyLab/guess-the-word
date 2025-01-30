@@ -6,6 +6,6 @@
   },
   "deploy": {
     "startCommand": "npm run start -w backend",
-    "healthcheckPath": "localhost:3000/healthcheck"
+    "healthcheckPath": "/healthcheck"
   }
 }
