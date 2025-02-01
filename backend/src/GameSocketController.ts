@@ -1,5 +1,5 @@
 import { Server, Socket } from "socket.io";
-import { GamesManager } from "./GameController";
+import { GamesManager } from "./GamesManager";
 import {
   ClientToServerEvents,
   InterServerEvents,
@@ -15,10 +15,10 @@ type GameServer = Server<
 >;
 
 export class GameSocketController {
-  private gameController: GamesManager;
+  private gamesManager: GamesManager;
   private server: GameServer;
   constructor(gameController: GamesManager, server: GameServer) {
-    this.gameController = gameController;
+    this.gamesManager = gameController;
     this.server = server;
   }
 
@@ -28,13 +28,18 @@ export class GameSocketController {
     playerId: string,
     playerName: string
   ) {
-    this.gameController.addPlayerToGame(gameId, playerId, playerName);
+    this.gamesManager.addPlayerToGame(gameId, playerId, playerName);
     socket.join(gameId);
-    const onGoingGame = this.gameController.getOngoingGame(gameId);
+    const onGoingGame = this.gamesManager.getOngoingGame(gameId);
     if (onGoingGame) {
       this.server
         .to(gameId)
         .emit("gameStarted", Array.from(onGoingGame.players.values()));
     }
+  }
+
+  leaveGame(socket: Socket, gameId: string, playerId: string) {
+    this.gamesManager.removePlayerFromGame(gameId, playerId);
+    socket.leave(gameId);
   }
 }

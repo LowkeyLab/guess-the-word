@@ -1,17 +1,17 @@
-import { GamesManager } from "./GameController";
+import { GamesManager } from "./GamesManager";
 import { Request, Response } from "express";
 
 export class GameRestController {
-  private gameController: GamesManager;
+  private gamesManager: GamesManager;
 
-  constructor(gameController: GamesManager) {
-    this.gameController = gameController;
+  constructor(gamesManager: GamesManager) {
+    this.gamesManager = gamesManager;
   }
 
   getGamesHandler(req: Request, res: Response) {
     const { available } = req.query;
     if (available) {
-      const availableGame = this.gameController.getAvailableGame();
+      const availableGame = this.gamesManager.getAvailableGame();
       res.json(availableGame);
     } else {
       res.status(500).json({ error: "Invalid query" });
@@ -19,7 +19,7 @@ export class GameRestController {
   }
 
   postGamesHandler(req: Request, res: Response) {
-    const game = this.gameController.createGame();
+    const game = this.gamesManager.createGame();
     res.json(game);
   }
 }

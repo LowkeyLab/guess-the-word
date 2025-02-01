@@ -19,7 +19,7 @@
 			opponent = players.find((player) => player.id !== data.user!.id)!.name;
 		});
 		return () => {
-			socket.disconnect();
+			socket.emit('leaveGame', data.gameId, data.user!.id);
 		};
 	});
 </script>

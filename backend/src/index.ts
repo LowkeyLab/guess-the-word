@@ -5,7 +5,7 @@ import express, { Request, Response } from "express";
 import { createServer } from "node:http";
 import { env } from "node:process";
 import { Server } from "socket.io";
-import { GamesManager } from "./GameController";
+import { GamesManager } from "./GamesManager";
 import { GameRestController } from "./GameRestController";
 import { GameSocketController } from "./GameSocketController";
 import {
@@ -40,9 +40,9 @@ const io = new Server<
   },
 });
 
-const gameController = new GamesManager();
-const gameRestController = new GameRestController(gameController);
-const gameSocketController = new GameSocketController(gameController, io);
+const gamesManager = new GamesManager();
+const gameRestController = new GameRestController(gamesManager);
+const gameSocketController = new GameSocketController(gamesManager, io);
 
 app.get("/healthcheck", (req, res) => {
   res.end("ok");
@@ -59,6 +59,9 @@ app.post("/games", (req, res) => {
 io.on("connection", (socket) => {
   socket.on("joinGame", (gameId, playerId, playerName) => {
     gameSocketController.joinGame(socket, gameId, playerId, playerName);
+  });
+  socket.on("leaveGame", (gameId, playerId) => {
+    gameSocketController.leaveGame(socket, gameId, playerId);
   });
 });
 

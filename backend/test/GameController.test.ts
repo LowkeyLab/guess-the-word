@@ -1,4 +1,4 @@
-import { GamesManager } from "../src/GameController";
+import { GamesManager } from "../src/GamesManager";
 
 describe("GameController", () => {
   let sut: GamesManager;
