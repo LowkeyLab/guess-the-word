@@ -37,8 +37,7 @@
 <div class="box-border flex justify-center">
 	{#if gameStarted}
 		<div class="flex flex-col items-center">
-			<h1 class="text-2xl font-bold">Game started!</h1>
-			<p class="text-lg">You are playing against {opponent}</p>
+			<p class="text-lg">You're playing with <span class="font-bold">{opponent}</span></p>
 		</div>
 	{:else}
 		<Loader />
