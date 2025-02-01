@@ -42,7 +42,7 @@ const io = new Server<
 
 const gameController = new GameController();
 const gameRestController = new GameRestController(gameController);
-const gameSocketController = new GameSocketController(gameController);
+const gameSocketController = new GameSocketController(gameController, io);
 
 app.get("/healthcheck", (req, res) => {
   res.end("ok");
@@ -58,7 +58,7 @@ app.post("/games", (req, res) => {
 
 io.on("connection", (socket) => {
   socket.on("joinGame", (gameId, playerId, playerName) => {
-    gameSocketController.joinGame(gameId, playerId, playerName);
+    gameSocketController.joinGame(socket, gameId, playerId, playerName);
   });
 });
 

@@ -1,4 +1,7 @@
+import { Player } from "@common/index";
+
 export class GameController {
+  private onGoingGames: Map<string, Game> = new Map();
   private availableGame: Game | null = null;
 
   getAvailableGame(): Game | null {
@@ -8,7 +11,7 @@ export class GameController {
   createGame(): Game {
     const game = {
       id: crypto.randomUUID(),
-      players: [],
+      players: new Map(),
       guesses: new Map(),
     };
     this.availableGame = game;
@@ -16,27 +19,48 @@ export class GameController {
   }
 
   addPlayerToGame(gameId: string, playerId: string, playerName: string) {
-    if (this.availableGame === null) {
-      console.log(`No game available`);
+    const availableGame = this.availableGame;
+    if (availableGame === null) {
+      console.debug(`No game available`);
       return;
     }
-    if (this.availableGame.id !== gameId) {
-      console.log(`Game ${gameId} not available`);
+    if (availableGame.id !== gameId) {
+      console.debug(`Game ${gameId} not available`);
       return;
     }
-    if (this.availableGame.players.includes(playerId)) {
-      console.log(`Player ${playerId} already in game`);
+    if (availableGame.players.has(playerId)) {
+      console.debug(`Player ${playerId} already in game`);
       return;
     }
-    this.availableGame.players.push(playerId);
-    console.log(
-      `Player ${playerId} with name ${playerName} joined game ${this.availableGame.id}`
+    if (availableGame.players.size >= 2) {
+      console.debug(`Game ${gameId} is full`);
+      return;
+    }
+    availableGame.players.set(playerId, {
+      id: playerId,
+      name: playerName,
+    });
+    console.info(
+      `Player ${playerId} with name ${playerName} joined game ${availableGame.id}`
     );
+    if (availableGame.players.size === 2) {
+      console.info(`Game ${availableGame.id} is starting`);
+      this.onGoingGames.set(availableGame.id, availableGame);
+      this.availableGame = null;
+    }
+  }
+
+  isGameOngoing(gameId: string): boolean {
+    return this.onGoingGames.has(gameId);
+  }
+
+  getOngoingGame(gameId: string) {
+    return this.onGoingGames.get(gameId);
   }
 }
 
 export interface Game {
   id: string;
-  players: string[];
+  players: Map<string, Player>;
   guesses: Map<string, string[]>;
 }

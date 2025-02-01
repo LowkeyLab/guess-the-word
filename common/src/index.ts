@@ -1,5 +1,5 @@
 export interface ServerToClientEvents {
-  playerJoined: (player: string) => void;
+  gameStarted: (players: Player[]) => void;
 }
 
 export interface ClientToServerEvents {
@@ -9,3 +9,8 @@ export interface ClientToServerEvents {
 export interface InterServerEvents {}
 
 export interface SocketData {}
+
+export interface Player {
+  id: string;
+  name: string;
+}
