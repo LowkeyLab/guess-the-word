@@ -25,12 +25,10 @@ export class GameController {
   addPlayerToGame(gameId: string, playerId: string, playerName: string) {
     const game = this.games.get(gameId);
     if (game === undefined) {
-      console.debug(`Game ${gameId} not found`);
-      return;
+      throw new Error(`Game ${gameId} not found`);
     }
     if (game.players.size >= 2) {
-      console.debug(`Game ${gameId} is full`);
-      return;
+      throw new Error(`Game ${gameId} is full`);
     }
     game.players.set(playerId, { id: playerId, name: playerName });
     console.info(`Player ${playerId} joined game ${gameId}`);
@@ -50,6 +48,10 @@ export class GameController {
     } else {
       return null;
     }
+  }
+
+  isGameAvailable(gameId: string): boolean {
+    return this.games.get(gameId)?.state === "waiting" || false;
   }
 
   addGuessToPlayer(gameId: string, playerId: string, guess: string) {
@@ -76,7 +78,8 @@ export class GameController {
       return;
     }
     game.players.delete(playerId);
-    console.info(`Player ${playerId} left game ${gameId}`);
+    game.guesses.clear();
+    game.state = "waiting";
   }
 
   getGuessesForPlayer(gameId: string, playerId: string) {

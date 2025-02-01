@@ -25,12 +25,9 @@ describe("GameController", () => {
   });
 
   test("should not add a player to a game that is not available", () => {
-    const game = sut.createGame();
-    // Attempt to add a player to an invalid game id
-    sut.addPlayerToGame("non-existent-game", "1", "player1");
-
-    // The original game should remain unchanged.
-    expect(game.players.size).toBe(0);
+    expect(() => {
+      sut.addPlayerToGame("non-existent-game", "1", "player1");
+    }).toThrow();
   });
 
   test("player cannot join a full game", () => {
@@ -38,11 +35,9 @@ describe("GameController", () => {
     sut.addPlayerToGame(game.id, "1", "player1");
     sut.addPlayerToGame(game.id, "2", "player2");
 
-    // Attempt to add a third player to the game
-    sut.addPlayerToGame(game.id, "3", "player3");
-
-    // The game should still have only 2 players
-    expect(game.players.size).toBe(2);
+    expect(() => {
+      sut.addPlayerToGame(game.id, "3", "player3");
+    }).toThrow();
   });
 
   test("when two players join a game, the game should be marked as ongoing", () => {
@@ -61,7 +56,6 @@ describe("GameController", () => {
 
     sut.addGuessToPlayer(game.id, "1", "guess");
 
-    expect(sut.getGuessesForPlayer(game.id, "1")).toBeDefined();
     expect(sut.getGuessesForPlayer(game.id, "1")).toHaveLength(1);
     expect(sut.getGuessesForPlayer(game.id, "1")).toContain("guess");
   });
@@ -75,5 +69,39 @@ describe("GameController", () => {
 
     // The game should have only 1 player
     expect(game.players.size).toBe(1);
+  });
+
+  test("when player is removed from a game, the game should not be ongoing", () => {
+    const game = sut.createGame();
+    sut.addPlayerToGame(game.id, "1", "player1");
+    sut.addPlayerToGame(game.id, "2", "player2");
+
+    sut.removePlayerFromGame(game.id, "1");
+
+    expect(sut.isGameAvailable(game.id)).toBe(true);
+  });
+
+  test("when player is removed from a game, the game should not have any guesses for that player", () => {
+    const game = sut.createGame();
+    sut.addPlayerToGame(game.id, "1", "player1");
+    sut.addPlayerToGame(game.id, "2", "player2");
+
+    sut.addGuessToPlayer(game.id, "1", "guess");
+
+    sut.removePlayerFromGame(game.id, "1");
+
+    expect(sut.getGuessesForPlayer(game.id, "1")).toBeUndefined();
+  });
+
+  test("when player is removed from a game, the guess of the other player should also be removed", () => {
+    const game = sut.createGame();
+    sut.addPlayerToGame(game.id, "1", "player1");
+    sut.addPlayerToGame(game.id, "2", "player2");
+
+    sut.addGuessToPlayer(game.id, "1", "guess");
+
+    sut.removePlayerFromGame(game.id, "2");
+
+    expect(sut.getGuessesForPlayer(game.id, "1")).toBeUndefined();
   });
 });
