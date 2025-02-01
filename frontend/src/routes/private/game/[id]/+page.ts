@@ -1,7 +1,8 @@
 import type { PageLoad } from './$types';
 
-export const load: PageLoad = async ({ params }) => {
+export const load: PageLoad = async ({ params, data }) => {
 	return {
-		gameId: params.id
+		gameId: params.id,
+		...data
 	};
 };
