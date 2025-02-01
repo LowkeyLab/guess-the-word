@@ -1,14 +1,11 @@
 <script lang="ts">
-	import { io } from 'socket.io-client';
-	import type { Database } from '$lib/supabase/database.types.js';
-	import type { SupabaseClient } from '@supabase/supabase-js';
+	import { io, Socket } from 'socket.io-client';
 	import { onMount } from 'svelte';
-	import { string } from 'zod';
 	import Loader from './Loader.svelte';
-	import * as Form from '$lib/components/ui/form/index.js';
 	import type { Infer, SuperValidated } from 'sveltekit-superforms';
 	import type { FormSchema } from './schema';
 	import { PUBLIC_BACKEND_URL } from '$env/static/public';
+	import type { ClientToServerEvents, ServerToClientEvents } from '@common/index';
 	interface Props {
 		data: {
 			user: {
@@ -18,21 +15,16 @@
 				};
 			};
 			form: SuperValidated<Infer<FormSchema>>;
-			params: {
-				id: string;
-			};
+			gameId: string;
 		};
 	}
 
 	const { data }: Props = $props();
 
 	onMount(() => {
-		const socket = io(`${PUBLIC_BACKEND_URL}`);
-		socket.emit('join', {
-			gameId: data.params.id,
-			userId: data.user.id,
-			userName: data.user.user_metadata.name
-		});
+		// please note that the types are reversed
+		const socket: Socket<ServerToClientEvents, ClientToServerEvents> = io(PUBLIC_BACKEND_URL);
+		socket.emit('joinGame', data.gameId, data.user.id, data.user.user_metadata.name);
 	});
 </script>
 

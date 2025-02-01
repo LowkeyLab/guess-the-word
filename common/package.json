@@ -1,6 +1,10 @@
 {
   "name": "@lowkeylab/common",
   "version": "0.0.1",
+  "scripts": {
+    "clean": "rm -rf build",
+    "build": "tsc"
+  },
   "main": "index.js",
   "devDependencies": {},
   "author": "",

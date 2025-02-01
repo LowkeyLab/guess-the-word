@@ -4,7 +4,7 @@
   "main": "index.ts",
   "scripts": {
     "clean": "rm -rf build",
-    "build": "tsc",
+    "build": "tsc -b",
     "dev": "npm run build && node build",
     "start": "npm run build && node build"
   },

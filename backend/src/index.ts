@@ -7,6 +7,13 @@ import { env } from "node:process";
 import { Server } from "socket.io";
 import { GameController } from "./GameController";
 import { GameRestController } from "./GameRestController";
+import { GameSocketController } from "./GameSocketController";
+import {
+  ClientToServerEvents,
+  InterServerEvents,
+  ServerToClientEvents,
+  SocketData,
+} from "@common/index";
 import helmet from "helmet";
 
 const app = express();
@@ -22,7 +29,12 @@ const supabase = createClient(
   env.SUPABASE_SERVICE_ROLE_KEY!
 );
 const server = createServer(app);
-const io = new Server(server, {
+const io = new Server<
+  ClientToServerEvents,
+  ServerToClientEvents,
+  InterServerEvents,
+  SocketData
+>(server, {
   cors: {
     origin: `${env.FRONTEND_URL!}`,
   },
@@ -30,6 +42,7 @@ const io = new Server(server, {
 
 const gameController = new GameController();
 const gameRestController = new GameRestController(gameController);
+const gameSocketController = new GameSocketController(gameController);
 
 app.get("/healthcheck", (req, res) => {
   res.end("ok");
@@ -44,7 +57,9 @@ app.post("/games", (req, res) => {
 });
 
 io.on("connection", (socket) => {
-  console.log("a user connected");
+  socket.on("joinGame", (gameId, playerId, playerName) => {
+    gameSocketController.joinGame(gameId, playerId, playerName);
+  });
 });
 
 server.listen(3000, () => {
