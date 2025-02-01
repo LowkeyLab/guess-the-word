@@ -1,23 +1,16 @@
-import { Player } from "@common/index";
+import { Game } from "./Game";
 
 export class GameController {
   private games: Map<string, Game> = new Map();
 
   getAvailableGame(): Game | null {
     return (
-      Array.from(this.games.values()).find(
-        (game) => game.state === "waiting"
-      ) || null
+      Array.from(this.games.values()).find((game) => game.isAvailable()) || null
     );
   }
 
   createGame(): Game {
-    const game: Game = {
-      id: crypto.randomUUID(),
-      state: "waiting",
-      players: new Map(),
-      guesses: new Map(),
-    };
+    const game: Game = new Game(crypto.randomUUID());
     this.games.set(game.id, game);
     return game;
   }
@@ -27,23 +20,16 @@ export class GameController {
     if (game === undefined) {
       throw new Error(`Game ${gameId} not found`);
     }
-    if (game.players.size >= 2) {
-      throw new Error(`Game ${gameId} is full`);
-    }
-    game.players.set(playerId, { id: playerId, name: playerName });
-    console.info(`Player ${playerId} joined game ${gameId}`);
-    if (game.players.size === 2) {
-      game.state = "ongoing";
-    }
+    game.addPlayer(playerId, playerName);
   }
 
   isGameOngoing(gameId: string): boolean {
-    return this.games.get(gameId)?.state === "ongoing" || false;
+    return this.games.get(gameId)?.isOngoing() || false;
   }
 
   getOngoingGame(gameId: string) {
     const game = this.games.get(gameId);
-    if (game && game.state === "ongoing") {
+    if (game && game.isOngoing()) {
       return game;
     } else {
       return null;
@@ -51,7 +37,7 @@ export class GameController {
   }
 
   isGameAvailable(gameId: string): boolean {
-    return this.games.get(gameId)?.state === "waiting" || false;
+    return this.games.get(gameId)?.isAvailable() || false;
   }
 
   addGuessToPlayer(gameId: string, playerId: string, guess: string) {
@@ -73,13 +59,7 @@ export class GameController {
       console.debug(`Game ${gameId} not found`);
       return;
     }
-    if (!game.players.has(playerId)) {
-      console.debug(`Player ${playerId} not found in game ${gameId}`);
-      return;
-    }
-    game.players.delete(playerId);
-    game.guesses.clear();
-    game.state = "waiting";
+    game.removePlayer(playerId);
   }
 
   getGuessesForPlayer(gameId: string, playerId: string) {
@@ -90,11 +70,4 @@ export class GameController {
     }
     return game.guesses.get(playerId);
   }
-}
-
-export interface Game {
-  id: string;
-  state: "waiting" | "ongoing" | "finished";
-  players: Map<string, Player>;
-  guesses: Map<string, string[]>;
 }

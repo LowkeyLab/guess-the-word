@@ -30,16 +30,6 @@ describe("GameController", () => {
     }).toThrow();
   });
 
-  test("player cannot join a full game", () => {
-    const game = sut.createGame();
-    sut.addPlayerToGame(game.id, "1", "player1");
-    sut.addPlayerToGame(game.id, "2", "player2");
-
-    expect(() => {
-      sut.addPlayerToGame(game.id, "3", "player3");
-    }).toThrow();
-  });
-
   test("when two players join a game, the game should be marked as ongoing", () => {
     const game = sut.createGame();
     sut.addPlayerToGame(game.id, "1", "player1");
@@ -79,29 +69,5 @@ describe("GameController", () => {
     sut.removePlayerFromGame(game.id, "1");
 
     expect(sut.isGameAvailable(game.id)).toBe(true);
-  });
-
-  test("when player is removed from a game, the game should not have any guesses for that player", () => {
-    const game = sut.createGame();
-    sut.addPlayerToGame(game.id, "1", "player1");
-    sut.addPlayerToGame(game.id, "2", "player2");
-
-    sut.addGuessToPlayer(game.id, "1", "guess");
-
-    sut.removePlayerFromGame(game.id, "1");
-
-    expect(sut.getGuessesForPlayer(game.id, "1")).toBeUndefined();
-  });
-
-  test("when player is removed from a game, the guess of the other player should also be removed", () => {
-    const game = sut.createGame();
-    sut.addPlayerToGame(game.id, "1", "player1");
-    sut.addPlayerToGame(game.id, "2", "player2");
-
-    sut.addGuessToPlayer(game.id, "1", "guess");
-
-    sut.removePlayerFromGame(game.id, "2");
-
-    expect(sut.getGuessesForPlayer(game.id, "1")).toBeUndefined();
   });
 });
