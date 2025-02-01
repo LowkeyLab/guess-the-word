@@ -54,6 +54,18 @@ describe("GameController", () => {
     expect(sut.isGameOngoing(game.id)).toBe(true);
   });
 
+  test("can add a guess to a player in a game", () => {
+    const game = sut.createGame();
+    sut.addPlayerToGame(game.id, "1", "player1");
+    sut.addPlayerToGame(game.id, "2", "player2");
+
+    sut.addGuessToPlayer(game.id, "1", "guess");
+
+    expect(sut.getGuessesForPlayer(game.id, "1")).toBeDefined();
+    expect(sut.getGuessesForPlayer(game.id, "1")).toHaveLength(1);
+    expect(sut.getGuessesForPlayer(game.id, "1")).toContain("guess");
+  });
+
   test("when player is removed from a game, the game should have one less player", () => {
     const game = sut.createGame();
     sut.addPlayerToGame(game.id, "1", "player1");
@@ -63,16 +75,5 @@ describe("GameController", () => {
 
     // The game should have only 1 player
     expect(game.players.size).toBe(1);
-  });
-
-  test("can add a guess to a player in a game", () => {
-    const game = sut.createGame();
-    sut.addPlayerToGame(game.id, "1", "player1");
-    sut.addPlayerToGame(game.id, "2", "player2");
-
-    sut.addGuessToPlayer(game.id, "1", "guess");
-
-    // The player should have a guess
-    expect(sut.getGuessesForPlayer(game.id, "1")).toHaveLength(1);
   });
 });
