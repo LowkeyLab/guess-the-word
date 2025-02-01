@@ -5,7 +5,7 @@
   "scripts": {
     "clean": "rm -rf build",
     "build": "tsc -b",
-    "dev": "npm run build && node build",
+    "dev": "nodemon src/index.ts",
     "start": "npm run build && node build"
   },
   "author": "",
