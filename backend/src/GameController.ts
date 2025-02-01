@@ -1,11 +1,14 @@
 import { Player } from "@common/index";
 
 export class GameController {
-  private onGoingGames: Map<string, Game> = new Map();
-  private availableGame: Game | null = null;
+  private games: Map<string, Game> = new Map();
 
   getAvailableGame(): Game | null {
-    return this.availableGame;
+    return (
+      Array.from(this.games.values()).find(
+        (game) => game.state === "waiting"
+      ) || null
+    );
   }
 
   createGame(): Game {
@@ -15,52 +18,42 @@ export class GameController {
       players: new Map(),
       guesses: new Map(),
     };
-    this.availableGame = game;
+    this.games.set(game.id, game);
     return game;
   }
 
   addPlayerToGame(gameId: string, playerId: string, playerName: string) {
-    const availableGame = this.availableGame;
-    if (availableGame === null) {
-      console.debug(`No game available`);
+    const game = this.games.get(gameId);
+    if (game === undefined) {
+      console.debug(`Game ${gameId} not found`);
       return;
     }
-    if (availableGame.id !== gameId) {
-      console.debug(`Game ${gameId} not available`);
-      return;
-    }
-    if (availableGame.players.has(playerId)) {
-      console.debug(`Player ${playerId} already in game`);
-      return;
-    }
-    if (availableGame.players.size >= 2) {
+    if (game.players.size >= 2) {
       console.debug(`Game ${gameId} is full`);
       return;
     }
-    availableGame.players.set(playerId, {
-      id: playerId,
-      name: playerName,
-    });
-    console.info(
-      `Player ${playerId} with name ${playerName} joined game ${availableGame.id}`
-    );
-    if (availableGame.players.size === 2) {
-      console.info(`Game ${availableGame.id} is starting`);
-      this.onGoingGames.set(availableGame.id, availableGame);
-      this.availableGame = null;
+    game.players.set(playerId, { id: playerId, name: playerName });
+    console.info(`Player ${playerId} joined game ${gameId}`);
+    if (game.players.size === 2) {
+      game.state = "ongoing";
     }
   }
 
   isGameOngoing(gameId: string): boolean {
-    return this.onGoingGames.has(gameId);
+    return this.games.get(gameId)?.state === "ongoing" || false;
   }
 
   getOngoingGame(gameId: string) {
-    return this.onGoingGames.get(gameId);
+    const game = this.games.get(gameId);
+    if (game && game.state === "ongoing") {
+      return game;
+    } else {
+      return null;
+    }
   }
 
   addGuessToPlayer(gameId: string, playerId: string, guess: string) {
-    const game = this.onGoingGames.get(gameId);
+    const game = this.games.get(gameId);
     if (game === undefined) {
       console.debug(`Game ${gameId} not found`);
       return;
@@ -73,7 +66,7 @@ export class GameController {
   }
 
   removePlayerFromGame(gameId: string, playerId: string) {
-    const game = this.onGoingGames.get(gameId);
+    const game = this.games.get(gameId);
     if (game === undefined) {
       console.debug(`Game ${gameId} not found`);
       return;
@@ -87,7 +80,7 @@ export class GameController {
   }
 
   getGuessesForPlayer(gameId: string, playerId: string) {
-    const game = this.onGoingGames.get(gameId);
+    const game = this.games.get(gameId);
     if (game === undefined) {
       console.debug(`Game ${gameId} not found`);
       return;
