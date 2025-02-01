@@ -9,8 +9,9 @@ export class GameController {
   }
 
   createGame(): Game {
-    const game = {
+    const game: Game = {
       id: crypto.randomUUID(),
+      state: "waiting",
       players: new Map(),
       guesses: new Map(),
     };
@@ -57,10 +58,47 @@ export class GameController {
   getOngoingGame(gameId: string) {
     return this.onGoingGames.get(gameId);
   }
+
+  addGuessToPlayer(gameId: string, playerId: string, guess: string) {
+    const game = this.onGoingGames.get(gameId);
+    if (game === undefined) {
+      console.debug(`Game ${gameId} not found`);
+      return;
+    }
+    if (game.guesses.get(playerId) === undefined) {
+      game.guesses.set(playerId, []);
+    }
+    game.guesses.get(playerId)!.push(guess);
+    console.info(`Player ${playerId} made a guess in game ${gameId}`);
+  }
+
+  removePlayerFromGame(gameId: string, playerId: string) {
+    const game = this.onGoingGames.get(gameId);
+    if (game === undefined) {
+      console.debug(`Game ${gameId} not found`);
+      return;
+    }
+    if (!game.players.has(playerId)) {
+      console.debug(`Player ${playerId} not found in game ${gameId}`);
+      return;
+    }
+    game.players.delete(playerId);
+    console.info(`Player ${playerId} left game ${gameId}`);
+  }
+
+  getGuessesForPlayer(gameId: string, playerId: string) {
+    const game = this.onGoingGames.get(gameId);
+    if (game === undefined) {
+      console.debug(`Game ${gameId} not found`);
+      return;
+    }
+    return game.guesses.get(playerId);
+  }
 }
 
 export interface Game {
   id: string;
+  state: "waiting" | "ongoing" | "finished";
   players: Map<string, Player>;
   guesses: Map<string, string[]>;
 }
