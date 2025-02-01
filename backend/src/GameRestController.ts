@@ -1,10 +1,10 @@
-import { GameController } from "./GameController";
+import { GamesManager } from "./GameController";
 import { Request, Response } from "express";
 
 export class GameRestController {
-  private gameController: GameController;
+  private gameController: GamesManager;
 
-  constructor(gameController: GameController) {
+  constructor(gameController: GamesManager) {
     this.gameController = gameController;
   }
 

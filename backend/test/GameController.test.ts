@@ -1,10 +1,10 @@
-import { GameController } from "../src/GameController";
+import { GamesManager } from "../src/GameController";
 
 describe("GameController", () => {
-  let sut: GameController;
+  let sut: GamesManager;
 
   beforeEach(() => {
-    sut = new GameController();
+    sut = new GamesManager();
   });
 
   test("should create a new game", () => {

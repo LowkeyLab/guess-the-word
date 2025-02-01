@@ -5,7 +5,7 @@ import express, { Request, Response } from "express";
 import { createServer } from "node:http";
 import { env } from "node:process";
 import { Server } from "socket.io";
-import { GameController } from "./GameController";
+import { GamesManager } from "./GameController";
 import { GameRestController } from "./GameRestController";
 import { GameSocketController } from "./GameSocketController";
 import {
@@ -40,7 +40,7 @@ const io = new Server<
   },
 });
 
-const gameController = new GameController();
+const gameController = new GamesManager();
 const gameRestController = new GameRestController(gameController);
 const gameSocketController = new GameSocketController(gameController, io);
 

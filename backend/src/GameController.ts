@@ -1,6 +1,6 @@
 import { Game } from "./Game";
 
-export class GameController {
+export class GamesManager {
   private games: Map<string, Game> = new Map();
 
   getAvailableGame(): Game | null {

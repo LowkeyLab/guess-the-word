@@ -1,5 +1,5 @@
 import { Server, Socket } from "socket.io";
-import { GameController } from "./GameController";
+import { GamesManager } from "./GameController";
 import {
   ClientToServerEvents,
   InterServerEvents,
@@ -15,9 +15,9 @@ type GameServer = Server<
 >;
 
 export class GameSocketController {
-  private gameController: GameController;
+  private gameController: GamesManager;
   private server: GameServer;
-  constructor(gameController: GameController, server: GameServer) {
+  constructor(gameController: GamesManager, server: GameServer) {
     this.gameController = gameController;
     this.server = server;
   }
