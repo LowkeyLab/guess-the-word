@@ -68,6 +68,17 @@ describe("Game", () => {
     expect(sut.isFinished()).toBe(true);
   });
 
+  test("winning guesses are case-insensitive", () => {
+    sut.addPlayer("1", "player1");
+    sut.addPlayer("2", "player2");
+
+    sut.addGuess("1", "guess");
+    sut.addGuess("2", "GUESS");
+
+    // The game should be marked as finished
+    expect(sut.isFinished()).toBe(true);
+  });
+
   test("after each players guess once, the round should end", () => {
     sut.addPlayer("1", "player1");
     sut.addPlayer("2", "player2");

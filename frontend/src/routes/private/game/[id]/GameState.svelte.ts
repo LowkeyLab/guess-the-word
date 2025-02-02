@@ -1,4 +1,4 @@
-import type { Player } from "@common";
+import type { Player } from '@common';
 
 export class GameState {
 	id: string;

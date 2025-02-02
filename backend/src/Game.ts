@@ -117,7 +117,9 @@ class Round {
 
   isWinning(): boolean {
     const guesses = Array.from(this.guesses.values());
-    return this.isFinished() && guesses[0] === guesses[1];
+    return (
+      this.isFinished() && guesses[0].toLowerCase() === guesses[1].toLowerCase()
+    );
   }
 
   isStarted(): boolean {
