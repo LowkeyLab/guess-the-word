@@ -24,10 +24,6 @@ app.use(
   })
 );
 
-const supabase = createClient(
-  env.SUPABASE_URL!,
-  env.SUPABASE_SERVICE_ROLE_KEY!
-);
 const server = createServer(app);
 const io = new Server<
   ClientToServerEvents,
