@@ -64,7 +64,7 @@ io.on("connection", (socket) => {
     gameSocketController.leaveGame(socket, gameId, playerId);
   });
   socket.on("guessAdded", (gameId, playerId, guess) => {
-    gameSocketController.addGuess(socket, gameId, playerId, guess);
+    gameSocketController.addGuess(gameId, playerId, guess);
   });
 });
 

@@ -18,13 +18,11 @@
 		gameStarted = true;
 		opponent = players.find((player) => player.id !== data.user!.id)!.name;
 	});
-	socket.on('guessesUpdated', (guesses) => {
-		for (const [playerId, playerGuesses] of Object.entries(guesses)) {
-			if (playerId === data.user!.id) {
-				ownGuesses = playerGuesses;
-			} else {
-				opponentGuesses = playerGuesses;
-			}
+	socket.on('guessAdded', (playerId, guess) => {
+		if (playerId === data.user!.id) {
+			ownGuesses.push(guess);
+		} else {
+			opponentGuesses.push(guess);
 		}
 	});
 	onMount(() => {

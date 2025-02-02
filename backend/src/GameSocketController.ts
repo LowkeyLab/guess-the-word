@@ -47,9 +47,12 @@ export class GameSocketController {
     socket.leave(gameId);
   }
 
-  addGuess(socket: Socket, gameId: string, playerId: string, guess: string) {
-    this.gamesManager.addGuessToPlayer(gameId, playerId, guess);
-    const guesses = this.gamesManager.getGuesses(gameId);
-    socket.emit("guessesUpdated", guesses);
+  addGuess(gameId: string, playerId: string, guess: string) {
+    try {
+      this.gamesManager.addGuessToPlayer(gameId, playerId, guess);
+      this.server.to(gameId).emit("guessAdded", playerId, guess);
+    } catch (error) {
+      console.error(`${error}`);
+    }
   }
 }
