@@ -34,10 +34,18 @@ export class Game {
     if (!this.players.has(playerId)) {
       throw new Error(`Player ${playerId} not found in game ${this.id}`);
     }
-    if (!this.guesses.has(playerId)) {
-      this.guesses.set(playerId, []);
+    let playerGuesses = this.guesses.get(playerId);
+    if (!playerGuesses) {
+      playerGuesses = [];
     }
-    this.guesses.get(playerId)!.push(guess);
+    const otherPlayerGuesses = Array.from(this.guesses.keys())
+      .filter((key) => key !== playerId)
+      .map((key) => this.guesses.get(key)!);
+    if (playerGuesses.length > otherPlayerGuesses.length) {
+      throw new Error(`Player ${playerId} has already guessed this round`);
+    }
+    playerGuesses.push(guess);
+    this.guesses.set(playerId, playerGuesses);
   }
 
   getGuesses(): Record<string, string[]>;

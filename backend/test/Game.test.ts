@@ -46,6 +46,17 @@ describe("Game", () => {
     expect(sut.getGuesses("1")).toContain("guess");
   });
 
+  test("a player cannot guess twice in a round", () => {
+    sut.addPlayer("1", "player1");
+    sut.addPlayer("2", "player2");
+
+    sut.addGuess("1", "guess");
+
+    expect(() => {
+      sut.addGuess("1", "guess");
+    }).toThrow();
+  });
+
   test("when player is removed from a game, the game should have one fewer player", () => {
     sut.addPlayer("1", "player1");
     sut.addPlayer("2", "player2");
