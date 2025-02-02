@@ -104,5 +104,6 @@ export class GamesManager {
       throw new Error(`Game ${gameId} not found`);
     }
     this.games.delete(gameId);
+    console.info(`Game ${gameId} ended`);
   }
 }

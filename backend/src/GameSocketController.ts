@@ -58,12 +58,15 @@ export class GameSocketController {
         this.gamesManager.endGame(gameId);
       } else {
         if (this.gamesManager.didRoundEnd(gameId)) {
-          this.server
-            .to(gameId)
-            .emit(
-              "roundEnded",
-              this.gamesManager.getGuessesForCurrentRound(gameId)
-            );
+          const guesses = this.gamesManager.getGuessesForCurrentRound(gameId);
+          console.log(guesses.size);
+          this.server.to(gameId).emit(
+            "roundEnded",
+            Array.from(guesses.entries()).map(([playerId, guess]) => ({
+              playerId,
+              guess,
+            }))
+          );
           this.gamesManager.startNewRound(gameId);
         }
       }

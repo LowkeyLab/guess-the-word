@@ -6,7 +6,6 @@
 	import GuessDisplay from './GuessDisplay.svelte';
 	import GuessForm from './GuessForm.svelte';
 	import Loader from './Loader.svelte';
-	import { beforeNavigate, onNavigate } from '$app/navigation';
 
 	const { data }: PageProps = $props();
 	const gameState: GameState = new GameState(data.gameId);
@@ -17,10 +16,10 @@
 	});
 	socket.on('roundEnded', (guesses) => {
 		for (const guess of guesses) {
-			if (guess[0] === data.user!.id) {
-				gameState.ownGuesses.push(guess[1]);
+			if (guess.playerId === data.user!.id) {
+				gameState.ownGuesses.push(guess.guess);
 			} else {
-				gameState.opponentGuesses.push(guess[1]);
+				gameState.opponentGuesses.push(guess.guess);
 			}
 		}
 	});

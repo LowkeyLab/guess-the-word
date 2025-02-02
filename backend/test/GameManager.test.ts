@@ -56,4 +56,37 @@ describe("GameController", () => {
 
     expect(sut.isGameAvailable(game.id)).toBe(true);
   });
+
+  test("can get guesses for a round", () => {
+    const game = sut.createGame();
+    sut.addPlayerToGame(game.id, "1", "player1");
+    sut.addPlayerToGame(game.id, "2", "player2");
+
+    sut.addGuessToPlayer(game.id, "1", "guess");
+
+    expect(sut.getGuessesForCurrentRound(game.id).get("1")).toBe("guess");
+  });
+
+  test("can get guesses for a round after it ends", () => {
+    const game = sut.createGame();
+    sut.addPlayerToGame(game.id, "1", "player1");
+    sut.addPlayerToGame(game.id, "2", "player2");
+
+    sut.addGuessToPlayer(game.id, "1", "guess");
+    sut.addGuessToPlayer(game.id, "2", "something");
+
+    expect(sut.getGuessesForCurrentRound(game.id).get("1")).toBe("guess");
+    expect(sut.getGuessesForCurrentRound(game.id).get("2")).toBe("something");
+  });
+
+  test("after both players guess, the round ends", () => {
+    const game = sut.createGame();
+    sut.addPlayerToGame(game.id, "1", "player1");
+    sut.addPlayerToGame(game.id, "2", "player2");
+
+    sut.addGuessToPlayer(game.id, "1", "guess");
+    sut.addGuessToPlayer(game.id, "2", "something");
+
+    expect(sut.didRoundEnd(game.id)).toBe(true);
+  });
 });
