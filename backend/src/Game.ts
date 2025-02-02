@@ -38,14 +38,22 @@ export class Game {
     if (!playerGuesses) {
       playerGuesses = [];
     }
-    const otherPlayerGuesses = Array.from(this.guesses.keys())
+    let otherPlayerGuesses = Array.from(this.guesses.keys())
       .filter((key) => key !== playerId)
-      .map((key) => this.guesses.get(key)!);
+      .map((key) => this.guesses.get(key)!)
+      .at(0);
+    if (!otherPlayerGuesses) {
+      otherPlayerGuesses = [];
+    }
     if (playerGuesses.length > otherPlayerGuesses.length) {
       throw new Error(`Player ${playerId} has already guessed this round`);
     }
     playerGuesses.push(guess);
     this.guesses.set(playerId, playerGuesses);
+
+    if (otherPlayerGuesses[otherPlayerGuesses.length - 1] === guess) {
+      this.state = "finished";
+    }
   }
 
   getGuesses(): Record<string, string[]>;
@@ -72,5 +80,9 @@ export class Game {
 
   isOngoing(): boolean {
     return this.state === "ongoing";
+  }
+
+  isFinished(): boolean {
+    return this.state === "finished";
   }
 }

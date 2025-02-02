@@ -57,6 +57,17 @@ describe("Game", () => {
     }).toThrow();
   });
 
+  test("when two players guess the same word in a round, the game should be marked as finished", () => {
+    sut.addPlayer("1", "player1");
+    sut.addPlayer("2", "player2");
+
+    sut.addGuess("1", "guess");
+    sut.addGuess("2", "guess");
+
+    // The game should be marked as finished
+    expect(sut.isFinished()).toBe(true);
+  });
+
   test("when player is removed from a game, the game should have one fewer player", () => {
     sut.addPlayer("1", "player1");
     sut.addPlayer("2", "player2");
