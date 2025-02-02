@@ -40,8 +40,10 @@
 
 <div class="box-border flex justify-center">
 	{#if gameStarted}
-		<div class="flex min-w-60 flex-col gap-2">
-			<p class="text-lg">You're playing against <span class="font-bold">{opponent}</span></p>
+		<div class="flex min-w-full flex-col gap-4">
+			<p class="mx-auto text-xl">
+				You're playing against <span class="font-bold">{opponent}</span>
+			</p>
 			<GuessForm onSubmit={addGuess} />
 			<GuessDisplay {ownGuesses} {opponentGuesses}></GuessDisplay>
 		</div>
