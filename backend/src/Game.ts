@@ -61,6 +61,10 @@ export class Game {
     }, {});
   }
 
+  getGuessesForCurrentRound(): Map<string, string> {
+    return this.rounds.at(-1)!.guesses;
+  }
+
   getPlayers(): Player[] {
     return Array.from(this.players.values());
   }

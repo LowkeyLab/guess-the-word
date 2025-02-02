@@ -11,4 +11,12 @@ export class GameState {
 	constructor(id: string) {
 		this.id = id;
 	}
+
+	reset() {
+		this.opponent = undefined;
+		this.ownGuesses = [];
+		this.opponentGuesses = [];
+		this.state = 'waiting';
+		this.winningGuess = undefined;
+	}
 }

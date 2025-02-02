@@ -40,6 +40,7 @@ export class GameSocketController {
         .to(gameId)
         .emit("gameStarted", Array.from(onGoingGame.getPlayers()));
     }
+    console.info(`Player ${playerId} joined game ${gameId}`);
   }
 
   leaveGame(socket: Socket, gameId: string, playerId: string) {
@@ -54,8 +55,17 @@ export class GameSocketController {
       this.gamesManager.addGuessToPlayer(gameId, playerId, guess);
       if (this.gamesManager.isGameFinished(gameId)) {
         this.server.to(gameId).emit("gameFinished", guess);
+        this.gamesManager.endGame(gameId);
       } else {
-        this.server.to(gameId).emit("guessAdded", playerId, guess);
+        if (this.gamesManager.didRoundEnd(gameId)) {
+          this.server
+            .to(gameId)
+            .emit(
+              "roundEnded",
+              this.gamesManager.getGuessesForCurrentRound(gameId)
+            );
+          this.gamesManager.startNewRound(gameId);
+        }
       }
     } catch (error) {
       console.error(`${error}`);

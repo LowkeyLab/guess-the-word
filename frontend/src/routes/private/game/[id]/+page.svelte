@@ -6,6 +6,7 @@
 	import GuessDisplay from './GuessDisplay.svelte';
 	import GuessForm from './GuessForm.svelte';
 	import Loader from './Loader.svelte';
+	import { beforeNavigate, onNavigate } from '$app/navigation';
 
 	const { data }: PageProps = $props();
 	const gameState: GameState = new GameState(data.gameId);
@@ -14,11 +15,13 @@
 		gameState.state = 'ongoing';
 		gameState.opponent = players.find((player) => player.id !== data.user!.id);
 	});
-	socket.on('guessAdded', (playerId, guess) => {
-		if (playerId === data.user!.id) {
-			gameState.ownGuesses.push(guess);
-		} else {
-			gameState.opponentGuesses.push(guess);
+	socket.on('roundEnded', (guesses) => {
+		for (const guess of guesses) {
+			if (guess[0] === data.user!.id) {
+				gameState.ownGuesses.push(guess[1]);
+			} else {
+				gameState.opponentGuesses.push(guess[1]);
+			}
 		}
 	});
 	socket.on('gameFinished', (winningGuess) => {
@@ -40,13 +43,17 @@
 	function addGuess(guess: string) {
 		socket.emit('guessAdded', data.gameId, data.user!.id, guess);
 	}
+
+	function resetGame() {
+		gameState.reset();
+	}
 </script>
 
 <div class="box-border flex justify-center">
 	{#if gameState.state === 'finished'}
 		<GameFinishedBanner winningGuess={gameState.winningGuess} />
 	{:else if gameState.state === 'ongoing'}
-		<div class="flex min-w-full flex-col gap-4">
+		<div class="flex flex-col gap-4">
 			<p class="mx-auto text-xl">
 				You're playing against <span class="font-bold">{gameState.opponent?.name}</span>
 			</p>

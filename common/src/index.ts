@@ -3,6 +3,7 @@ export interface ServerToClientEvents {
   leftGame: (playerId: string) => void;
   guessAdded: (playerId: string, guess: string) => void;
   gameFinished: (guess: string) => void;
+  roundEnded: (guesses: Map<string, string>) => void;
 }
 
 export interface ClientToServerEvents {

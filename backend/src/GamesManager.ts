@@ -73,4 +73,36 @@ export class GamesManager {
     }
     return game.getGuesses();
   }
+
+  getGuessesForCurrentRound(gameId: string) {
+    const game = this.games.get(gameId);
+    if (game === undefined) {
+      throw new Error(`Game ${gameId} not found`);
+    }
+    return game.getGuessesForCurrentRound();
+  }
+
+  didRoundEnd(gameId: string): boolean {
+    const game = this.games.get(gameId);
+    if (game === undefined) {
+      throw new Error(`Game ${gameId} not found`);
+    }
+    return game.didRoundEnd();
+  }
+
+  startNewRound(gameId: string) {
+    const game = this.games.get(gameId);
+    if (game === undefined) {
+      throw new Error(`Game ${gameId} not found`);
+    }
+    game.startNewRound();
+  }
+
+  endGame(gameId: string) {
+    const game = this.games.get(gameId);
+    if (game === undefined) {
+      throw new Error(`Game ${gameId} not found`);
+    }
+    this.games.delete(gameId);
+  }
 }

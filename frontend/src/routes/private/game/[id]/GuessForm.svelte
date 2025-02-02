@@ -12,7 +12,7 @@
 	<Label for="guess">Your guess</Label>
 	<Input id="guess" type="text" bind:value={guess}></Input>
 	<Button
-		class="text-lg"
+		class="mx-auto w-32 text-lg"
 		disabled={!valid}
 		onclick={() => {
 			onSubmit(guess);
