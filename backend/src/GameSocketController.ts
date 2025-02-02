@@ -38,12 +38,18 @@ export class GameSocketController {
     if (onGoingGame) {
       this.server
         .to(gameId)
-        .emit("gameStarted", Array.from(onGoingGame.players.values()));
+        .emit("gameStarted", Array.from(onGoingGame.getPlayers()));
     }
   }
 
   leaveGame(socket: Socket, gameId: string, playerId: string) {
     this.gamesManager.removePlayerFromGame(gameId, playerId);
     socket.leave(gameId);
+  }
+
+  addGuess(socket: Socket, gameId: string, playerId: string, guess: string) {
+    this.gamesManager.addGuessToPlayer(gameId, playerId, guess);
+    const guesses = this.gamesManager.getGuesses(gameId);
+    socket.emit("guessesUpdated", guesses);
   }
 }

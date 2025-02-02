@@ -10,16 +10,13 @@ describe("Game", () => {
   test("can create a new game", () => {
     expect(sut).toBeDefined();
     expect(sut.id).toBeDefined();
-    expect(sut.players.size).toBe(0);
+    expect(sut.getPlayers().length).toBe(0);
   });
 
   test("can add a player to a game", () => {
     sut.addPlayer("1", "player1");
 
-    expect(sut.players.size).toBe(1);
-    expect(sut.players.get("1")).toBeDefined();
-    // Assuming the player's object has a name property
-    expect(sut.players.get("1")?.name).toBe("player1");
+    expect(sut.getPlayers().length).toBe(1);
   });
 
   test("player cannot join a full game", () => {

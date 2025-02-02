@@ -6,29 +6,46 @@
 	import type { ClientToServerEvents, ServerToClientEvents } from '@common/index';
 	import GuessForm from './GuessForm.svelte';
 	import type { PageProps } from './$types';
+	import GuessDisplay from './GuessDisplay.svelte';
 
 	const { data }: PageProps = $props();
 	let opponent = $state('');
 	let gameStarted = $state(false);
-
+	let ownGuesses: string[] = $state([]);
+	let opponentGuesses: string[] = $state([]);
+	const socket: Socket<ServerToClientEvents, ClientToServerEvents> = io(PUBLIC_BACKEND_URL);
+	socket.on('gameStarted', (players) => {
+		gameStarted = true;
+		opponent = players.find((player) => player.id !== data.user!.id)!.name;
+	});
+	socket.on('guessesUpdated', (guesses) => {
+		for (const [playerId, playerGuesses] of Object.entries(guesses)) {
+			if (playerId === data.user!.id) {
+				ownGuesses = playerGuesses;
+			} else {
+				opponentGuesses = playerGuesses;
+			}
+		}
+	});
 	onMount(() => {
-		const socket: Socket<ServerToClientEvents, ClientToServerEvents> = io(PUBLIC_BACKEND_URL);
 		socket.emit('joinGame', data.gameId, data.user!.id, data.user!.user_metadata.name);
-		socket.on('gameStarted', (players) => {
-			gameStarted = true;
-			opponent = players.find((player) => player.id !== data.user!.id)!.name;
-		});
+
 		return () => {
 			socket.emit('leaveGame', data.gameId, data.user!.id);
 		};
 	});
+
+	function addGuess(guess: string) {
+		socket.emit('guessAdded', data.gameId, data.user!.id, guess);
+	}
 </script>
 
 <div class="box-border flex justify-center">
 	{#if gameStarted}
 		<div class="flex min-w-60 flex-col gap-2">
 			<p class="text-lg">You're playing against <span class="font-bold">{opponent}</span></p>
-			<GuessForm />
+			<GuessForm onSubmit={addGuess} />
+			<GuessDisplay {ownGuesses} {opponentGuesses}></GuessDisplay>
 		</div>
 	{:else}
 		<Loader />

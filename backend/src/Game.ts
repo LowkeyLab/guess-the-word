@@ -3,8 +3,8 @@ import { Player } from "@common/index";
 export class Game {
   id: string;
   private state: "waiting" | "ongoing" | "finished" = "waiting";
-  players: Map<string, Player> = new Map();
-  guesses: Map<string, string[]> = new Map();
+  private players: Map<string, Player> = new Map();
+  private guesses: Map<string, string[]> = new Map();
 
   constructor(id: string) {
     this.id = id;
@@ -40,8 +40,18 @@ export class Game {
     this.guesses.get(playerId)!.push(guess);
   }
 
-  getGuesses(playerId: string): string[] {
-    return this.guesses.get(playerId) || [];
+  getGuesses(): Record<string, string[]>;
+  getGuesses(playerId: string): string[];
+
+  getGuesses(playerId?: string): string[] | Record<string, string[]> {
+    if (typeof playerId === "string") {
+      return this.guesses.get(playerId) || [];
+    }
+    return Object.fromEntries(this.guesses.entries());
+  }
+
+  getPlayers(): Player[] {
+    return Array.from(this.players.values());
   }
 
   numberOfPlayers(): number {

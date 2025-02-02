@@ -46,11 +46,10 @@ export class GamesManager {
       console.debug(`Game ${gameId} not found`);
       return;
     }
-    if (game.guesses.get(playerId) === undefined) {
-      game.guesses.set(playerId, []);
-    }
-    game.guesses.get(playerId)!.push(guess);
-    console.info(`Player ${playerId} made a guess in game ${gameId}`);
+    game.addGuess(playerId, guess);
+    console.info(
+      `Current guesses for game ${gameId}: ${JSON.stringify(game.getGuesses())}`
+    );
   }
 
   removePlayerFromGame(gameId: string, playerId: string) {
@@ -62,12 +61,11 @@ export class GamesManager {
     game.removePlayer(playerId);
   }
 
-  getGuessesForPlayer(gameId: string, playerId: string) {
+  getGuesses(gameId: string) {
     const game = this.games.get(gameId);
     if (game === undefined) {
-      console.debug(`Game ${gameId} not found`);
-      return;
+      throw new Error(`Game ${gameId} not found`);
     }
-    return game.guesses.get(playerId);
+    return game.getGuesses();
   }
 }

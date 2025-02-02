@@ -1,7 +1,7 @@
 import "dotenv/config";
 import cors from "cors";
 import { createClient } from "@supabase/supabase-js";
-import express, { Request, Response } from "express";
+import express from "express";
 import { createServer } from "node:http";
 import { env } from "node:process";
 import { Server } from "socket.io";
@@ -62,6 +62,9 @@ io.on("connection", (socket) => {
   });
   socket.on("leaveGame", (gameId, playerId) => {
     gameSocketController.leaveGame(socket, gameId, playerId);
+  });
+  socket.on("guessAdded", (gameId, playerId, guess) => {
+    gameSocketController.addGuess(socket, gameId, playerId, guess);
   });
 });
 
