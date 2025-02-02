@@ -48,12 +48,12 @@
 	}
 </script>
 
-<div class="box-border flex justify-center">
+<div class="box-border flex">
 	{#if gameState.state === 'finished'}
 		<GameFinishedBanner winningGuess={gameState.winningGuess} />
 	{:else if gameState.state === 'ongoing'}
 		<div class="flex flex-col gap-4">
-			<p class="mx-auto text-xl">
+			<p class="text-xl">
 				You're playing against <span class="font-bold">{gameState.opponent?.name}</span>
 			</p>
 			<GuessForm onSubmit={addGuess} />

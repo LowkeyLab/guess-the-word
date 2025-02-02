@@ -10,13 +10,15 @@
 
 <div class="box-border flex flex-col gap-1.5">
 	<Label for="guess">Your guess</Label>
-	<Input id="guess" type="text" bind:value={guess}></Input>
-	<Button
-		class="mx-auto w-32 text-lg"
-		disabled={!valid}
-		onclick={() => {
-			onSubmit(guess);
-			guess = '';
-		}}>Submit</Button
-	>
+	<div class="flex gap-2">
+		<Input id="guess" type="text" bind:value={guess}></Input>
+		<Button
+			class="mx-auto w-32 text-lg"
+			disabled={!valid}
+			onclick={() => {
+				onSubmit(guess);
+				guess = '';
+			}}>Submit</Button
+		>
+	</div>
 </div>
