@@ -8,5 +8,5 @@
 		<p>Each round, come up with a word</p>
 		<p>Once both players guess the same word, you win!</p>
 	</div>
-	<Button class="rounded-lg text-lg" href="/private/game">Start Playing</Button>
+	<Button class="mx-auto rounded-lg text-lg" href="/private/game">Start Playing</Button>
 </div>

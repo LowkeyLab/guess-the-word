@@ -4,7 +4,7 @@ export class Game {
   id: string;
   private state: "waiting" | "ongoing" | "finished" = "waiting";
   private players: Map<string, Player> = new Map();
-  private guesses: Map<string, string[]> = new Map();
+  private rounds: Round[] = [new Round()];
 
   constructor(id: string) {
     this.id = id;
@@ -25,8 +25,7 @@ export class Game {
       throw new Error(`Player ${playerId} not found in game ${this.id}`);
     }
     this.players.delete(playerId);
-    this.guesses.delete(playerId);
-    this.guesses.clear();
+    this.deleteGuesses();
     this.state = "waiting";
   }
 
@@ -34,25 +33,12 @@ export class Game {
     if (!this.players.has(playerId)) {
       throw new Error(`Player ${playerId} not found in game ${this.id}`);
     }
-    let playerGuesses = this.guesses.get(playerId);
-    if (!playerGuesses) {
-      playerGuesses = [];
-    }
-    let otherPlayerGuesses = Array.from(this.guesses.keys())
-      .filter((key) => key !== playerId)
-      .map((key) => this.guesses.get(key)!)
-      .at(0);
-    if (!otherPlayerGuesses) {
-      otherPlayerGuesses = [];
-    }
-    if (playerGuesses.length > otherPlayerGuesses.length) {
-      throw new Error(`Player ${playerId} has already guessed this round`);
-    }
-    playerGuesses.push(guess);
-    this.guesses.set(playerId, playerGuesses);
-
-    if (otherPlayerGuesses[otherPlayerGuesses.length - 1] === guess) {
+    const lastRound = this.rounds.at(-1)!;
+    lastRound.addGuess(playerId, guess);
+    if (lastRound.isWinning()) {
       this.state = "finished";
+    } else if (lastRound.isFinished()) {
+      this.rounds.push(new Round());
     }
   }
 
@@ -60,10 +46,21 @@ export class Game {
   getGuesses(playerId: string): string[];
 
   getGuesses(playerId?: string): string[] | Record<string, string[]> {
-    if (typeof playerId === "string") {
-      return this.guesses.get(playerId) || [];
+    if (playerId) {
+      return this.rounds.reduce<string[]>(
+        (acc, round) =>
+          round.guesses.has(playerId)
+            ? [...acc, round.guesses.get(playerId)!]
+            : acc,
+        []
+      );
     }
-    return Object.fromEntries(this.guesses.entries());
+    return this.rounds.reduce<Record<string, string[]>>((acc, round) => {
+      [...round.guesses.entries()].forEach(([pid, guess]) => {
+        acc[pid] = [...(acc[pid] || []), guess];
+      });
+      return acc;
+    }, {});
   }
 
   getPlayers(): Player[] {
@@ -84,5 +81,33 @@ export class Game {
 
   isFinished(): boolean {
     return this.state === "finished";
+  }
+
+  private deleteGuesses() {
+    this.rounds = [new Round()];
+  }
+}
+
+class Round {
+  guesses: Map<string, string> = new Map();
+
+  addGuess(playerId: string, guess: string) {
+    if (this.guesses.has(playerId)) {
+      throw new Error(`Player ${playerId} has already guessed this round`);
+    }
+    this.guesses.set(playerId, guess);
+  }
+
+  isWinning(): boolean {
+    const guesses = Array.from(this.guesses.values());
+    return this.isFinished() && guesses[0] === guesses[1];
+  }
+
+  isStarted(): boolean {
+    return this.guesses.size === 0;
+  }
+
+  isFinished(): boolean {
+    return this.guesses.size === 2;
   }
 }
