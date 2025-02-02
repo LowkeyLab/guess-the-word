@@ -50,7 +50,11 @@ export class GameSocketController {
   addGuess(gameId: string, playerId: string, guess: string) {
     try {
       this.gamesManager.addGuessToPlayer(gameId, playerId, guess);
-      this.server.to(gameId).emit("guessAdded", playerId, guess);
+      if (this.gamesManager.isGameFinished(gameId)) {
+        this.server.to(gameId).emit("gameFinished", guess);
+      } else {
+        this.server.to(gameId).emit("guessAdded", playerId, guess);
+      }
     } catch (error) {
       console.error(`${error}`);
     }

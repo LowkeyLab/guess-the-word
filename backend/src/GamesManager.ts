@@ -40,6 +40,10 @@ export class GamesManager {
     return this.games.get(gameId)?.isAvailable() || false;
   }
 
+  isGameFinished(gameId: string): boolean {
+    return this.games.get(gameId)?.isFinished() || false;
+  }
+
   addGuessToPlayer(gameId: string, playerId: string, guess: string) {
     const game = this.games.get(gameId);
     if (game === undefined) {
@@ -47,9 +51,6 @@ export class GamesManager {
       return;
     }
     game.addGuess(playerId, guess);
-    console.info(
-      `Current guesses for game ${gameId}: ${JSON.stringify(game.getGuesses())}`
-    );
   }
 
   removePlayerFromGame(gameId: string, playerId: string) {

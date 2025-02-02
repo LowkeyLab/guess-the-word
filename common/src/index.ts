@@ -1,6 +1,7 @@
 export interface ServerToClientEvents {
   gameStarted: (players: Player[]) => void;
   guessAdded: (playerId: string, guess: string) => void;
+  gameFinished: (guess: string) => void;
 }
 
 export interface ClientToServerEvents {

@@ -7,23 +7,27 @@
 	import GuessForm from './GuessForm.svelte';
 	import type { PageProps } from './$types';
 	import GuessDisplay from './GuessDisplay.svelte';
+	import GameFinishedBanner from './GameFinishedBanner.svelte';
+	import { GameState } from './GameState.svelte';
 
 	const { data }: PageProps = $props();
-	let opponent = $state('');
-	let gameStarted = $state(false);
-	let ownGuesses: string[] = $state([]);
-	let opponentGuesses: string[] = $state([]);
+	const gameState: GameState = new GameState(data.gameId);
 	const socket: Socket<ServerToClientEvents, ClientToServerEvents> = io(PUBLIC_BACKEND_URL);
 	socket.on('gameStarted', (players) => {
-		gameStarted = true;
-		opponent = players.find((player) => player.id !== data.user!.id)!.name;
+		gameState.state = 'ongoing';
+		gameState.opponentName = players.find((player) => player.id !== data.user!.id)!.name;
 	});
 	socket.on('guessAdded', (playerId, guess) => {
 		if (playerId === data.user!.id) {
-			ownGuesses.push(guess);
+			gameState.ownGuesses.push(guess);
 		} else {
-			opponentGuesses.push(guess);
+			gameState.opponentGuesses.push(guess);
 		}
+	});
+	socket.on('gameFinished', (winningGuess) => {
+		console.log('game finished');
+		gameState.state = 'finished';
+		gameState.winningGuess = winningGuess;
 	});
 	onMount(() => {
 		socket.emit('joinGame', data.gameId, data.user!.id, data.user!.user_metadata.name);
@@ -39,13 +43,16 @@
 </script>
 
 <div class="box-border flex justify-center">
-	{#if gameStarted}
+	{#if gameState.state === 'finished'}
+		<GameFinishedBanner winningGuess={gameState.winningGuess} />
+	{:else if gameState.state === 'ongoing'}
 		<div class="flex min-w-full flex-col gap-4">
 			<p class="mx-auto text-xl">
-				You're playing against <span class="font-bold">{opponent}</span>
+				You're playing against <span class="font-bold">{gameState.opponentName}</span>
 			</p>
 			<GuessForm onSubmit={addGuess} />
-			<GuessDisplay {ownGuesses} {opponentGuesses}></GuessDisplay>
+			<GuessDisplay ownGuesses={gameState.ownGuesses} opponentGuesses={gameState.opponentGuesses}
+			></GuessDisplay>
 		</div>
 	{:else}
 		<Loader />
