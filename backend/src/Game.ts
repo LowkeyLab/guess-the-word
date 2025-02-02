@@ -37,8 +37,6 @@ export class Game {
     lastRound.addGuess(playerId, guess);
     if (lastRound.isWinning()) {
       this.state = "finished";
-    } else if (lastRound.isFinished()) {
-      this.rounds.push(new Round());
     }
   }
 
@@ -69,6 +67,21 @@ export class Game {
 
   numberOfPlayers(): number {
     return this.players.size;
+  }
+
+  startNewRound() {
+    if (!this.didRoundEnd()) {
+      throw new Error("Cannot start a new round before the current one ends");
+    }
+    this.rounds.push(new Round());
+  }
+
+  didRoundEnd(): boolean {
+    return this.rounds.at(-1)!.isFinished();
+  }
+
+  getRoundNumber(): number {
+    return this.rounds.length;
   }
 
   isAvailable(): boolean {

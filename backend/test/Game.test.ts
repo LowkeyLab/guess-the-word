@@ -68,6 +68,41 @@ describe("Game", () => {
     expect(sut.isFinished()).toBe(true);
   });
 
+  test("after each players guess once, the round should end", () => {
+    sut.addPlayer("1", "player1");
+    sut.addPlayer("2", "player2");
+
+    sut.addGuess("1", "guess1");
+    sut.addGuess("2", "guess2");
+
+    // The game should be marked as finished
+    expect(sut.didRoundEnd()).toBe(true);
+  });
+
+  test("when a round ends, can start a new round", () => {
+    sut.addPlayer("1", "player1");
+    sut.addPlayer("2", "player2");
+
+    sut.addGuess("1", "guess1");
+    sut.addGuess("2", "guess2");
+
+    sut.startNewRound();
+
+    // The game should have 2 rounds
+    expect(sut.getRoundNumber()).toBe(2);
+  });
+
+  test("cannot start a new round before the current one ends", () => {
+    sut.addPlayer("1", "player1");
+    sut.addPlayer("2", "player2");
+
+    sut.addGuess("1", "guess1");
+
+    expect(() => {
+      sut.startNewRound();
+    }).toThrow();
+  });
+
   test("when player is removed from a game, the game should have one fewer player", () => {
     sut.addPlayer("1", "player1");
     sut.addPlayer("2", "player2");
