@@ -26,9 +26,9 @@
 
 <div class="box-border flex justify-center">
 	{#if gameStarted}
-		<div class="flex flex-col items-center gap-2">
-			<p class="text-lg">You're playing with <span class="font-bold">{opponent}</span></p>
-			<GuessForm {data} />
+		<div class="flex flex-col gap-2">
+			<p class="text-lg">You're matched against <span class="font-bold">{opponent}</span></p>
+			<GuessForm />
 		</div>
 	{:else}
 		<Loader />

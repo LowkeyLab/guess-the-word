@@ -1,27 +1,14 @@
 <script lang="ts">
-	import { formSchema, type FormSchema } from './schema';
-	import { type SuperValidated, type Infer, superForm } from 'sveltekit-superforms';
-	import { zodClient } from 'sveltekit-superforms/adapters';
-	import * as Form from '$lib/components/ui/form';
+	import Button from '$lib/components/ui/button/button.svelte';
 	import Input from '$lib/components/ui/input/input.svelte';
+	import Label from '$lib/components/ui/label/label.svelte';
 
-	let { data }: { data: { form: SuperValidated<Infer<FormSchema>> } } = $props();
-
-	const form = superForm(data.form, {
-		validators: zodClient(formSchema)
-	});
-
-	const { form: formData, enhance } = form;
+	let guess = $state('');
+	let valid = $derived(!(guess.trim() === '' || guess.length > 20));
 </script>
 
-<form method="POST" use:enhance>
-	<Form.Field {form} name="guess">
-		<Form.Control>
-			{#snippet children({ props })}
-				<Form.Label>Guess</Form.Label>
-				<Input {...props} bind:value={$formData.guess} />
-			{/snippet}
-		</Form.Control>
-	</Form.Field>
-	<Form.Button>Submit</Form.Button>
-</form>
+<div class="box-border flex flex-col gap-1.5">
+	<Label for="guess">Guess</Label>
+	<Input id="guess" type="text" bind:value={guess}></Input>
+	<Button class="text-lg" disabled={!valid}>Submit</Button>
+</div>

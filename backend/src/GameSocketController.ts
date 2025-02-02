@@ -28,7 +28,11 @@ export class GameSocketController {
     playerId: string,
     playerName: string
   ) {
-    this.gamesManager.addPlayerToGame(gameId, playerId, playerName);
+    try {
+      this.gamesManager.addPlayerToGame(gameId, playerId, playerName);
+    } catch (error) {
+      console.debug(`Error adding player to game: ${error}`);
+    }
     socket.join(gameId);
     const onGoingGame = this.gamesManager.getOngoingGame(gameId);
     if (onGoingGame) {
