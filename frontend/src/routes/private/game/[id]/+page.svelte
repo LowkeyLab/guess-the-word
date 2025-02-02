@@ -1,22 +1,18 @@
 <script lang="ts">
-	import { io, Socket } from 'socket.io-client';
-	import Loader from './Loader.svelte';
-	import { PUBLIC_BACKEND_URL } from '$env/static/public';
-	import type { ClientToServerEvents, ServerToClientEvents } from '@common/index';
-	import GuessForm from './GuessForm.svelte';
+	import { onDestroy, onMount } from 'svelte';
 	import type { PageProps } from './$types';
-	import GuessDisplay from './GuessDisplay.svelte';
 	import GameFinishedBanner from './GameFinishedBanner.svelte';
 	import { GameState } from './GameState.svelte';
-	import { beforeNavigate } from '$app/navigation';
-	import { onDestroy, onMount } from 'svelte';
+	import GuessDisplay from './GuessDisplay.svelte';
+	import GuessForm from './GuessForm.svelte';
+	import Loader from './Loader.svelte';
 
 	const { data }: PageProps = $props();
 	const gameState: GameState = new GameState(data.gameId);
 	const { socket } = data;
 	socket.on('gameStarted', (players) => {
 		gameState.state = 'ongoing';
-		gameState.opponentName = players.find((player) => player.id !== data.user!.id)!.name;
+		gameState.opponent = players.find((player) => player.id !== data.user!.id);
 	});
 	socket.on('guessAdded', (playerId, guess) => {
 		if (playerId === data.user!.id) {
@@ -30,13 +26,15 @@
 		gameState.state = 'finished';
 		gameState.winningGuess = winningGuess;
 	});
+	socket.on('leftGame', (playerId) => {
+		if (playerId === gameState.opponent?.id) {
+			gameState.state = 'waiting';
+			gameState.opponent = undefined;
+		}
+	});
 
 	onMount(() => {
 		socket.emit('joinGame', data.gameId, data.user.id, data.user.user_metadata.name);
-	});
-
-	onDestroy(() => {
-		socket.disconnect();
 	});
 
 	function addGuess(guess: string) {
@@ -50,7 +48,7 @@
 	{:else if gameState.state === 'ongoing'}
 		<div class="flex min-w-full flex-col gap-4">
 			<p class="mx-auto text-xl">
-				You're playing against <span class="font-bold">{gameState.opponentName}</span>
+				You're playing against <span class="font-bold">{gameState.opponent?.name}</span>
 			</p>
 			<GuessForm onSubmit={addGuess} />
 			<GuessDisplay ownGuesses={gameState.ownGuesses} opponentGuesses={gameState.opponentGuesses}

@@ -1,6 +1,8 @@
+import type { Player } from "@common";
+
 export class GameState {
 	id: string;
-	opponentName: string = $state('');
+	opponent: Player | undefined = $state(undefined);
 	ownGuesses: string[] = $state([]);
 	opponentGuesses: string[] = $state([]);
 	state: 'waiting' | 'ongoing' | 'finished' = $state('waiting');

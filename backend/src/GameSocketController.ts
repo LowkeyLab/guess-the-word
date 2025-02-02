@@ -46,6 +46,7 @@ export class GameSocketController {
     console.info(`Player ${playerId} left game ${gameId}`);
     this.gamesManager.removePlayerFromGame(gameId, playerId);
     socket.leave(gameId);
+    this.server.to(gameId).emit("leftGame", playerId);
   }
 
   addGuess(gameId: string, playerId: string, guess: string) {
