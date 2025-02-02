@@ -8,7 +8,7 @@
 </script>
 
 <div class="box-border flex flex-col gap-1.5">
-	<Label for="guess">Guess</Label>
+	<Label for="guess">Your guess</Label>
 	<Input id="guess" type="text" bind:value={guess}></Input>
 	<Button class="text-lg" disabled={!valid}>Submit</Button>
 </div>
