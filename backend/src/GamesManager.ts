@@ -59,7 +59,11 @@ export class GamesManager {
       console.debug(`Game ${gameId} not found`);
       return;
     }
-    game.removePlayer(playerId);
+    try {
+      game.removePlayer(playerId);
+    } catch (error) {
+      console.debug(`Error removing player from game: ${error}`);
+    }
   }
 
   getGuesses(gameId: string) {

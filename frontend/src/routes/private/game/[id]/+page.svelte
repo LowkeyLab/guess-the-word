@@ -1,6 +1,5 @@
 <script lang="ts">
 	import { io, Socket } from 'socket.io-client';
-	import { onMount } from 'svelte';
 	import Loader from './Loader.svelte';
 	import { PUBLIC_BACKEND_URL } from '$env/static/public';
 	import type { ClientToServerEvents, ServerToClientEvents } from '@common/index';
@@ -9,10 +8,12 @@
 	import GuessDisplay from './GuessDisplay.svelte';
 	import GameFinishedBanner from './GameFinishedBanner.svelte';
 	import { GameState } from './GameState.svelte';
+	import { beforeNavigate } from '$app/navigation';
+	import { onDestroy, onMount } from 'svelte';
 
 	const { data }: PageProps = $props();
 	const gameState: GameState = new GameState(data.gameId);
-	const socket: Socket<ServerToClientEvents, ClientToServerEvents> = io(PUBLIC_BACKEND_URL);
+	const { socket } = data;
 	socket.on('gameStarted', (players) => {
 		gameState.state = 'ongoing';
 		gameState.opponentName = players.find((player) => player.id !== data.user!.id)!.name;
@@ -29,12 +30,13 @@
 		gameState.state = 'finished';
 		gameState.winningGuess = winningGuess;
 	});
-	onMount(() => {
-		socket.emit('joinGame', data.gameId, data.user!.id, data.user!.user_metadata.name);
 
-		return () => {
-			socket.emit('leaveGame', data.gameId, data.user!.id);
-		};
+	onMount(() => {
+		socket.emit('joinGame', data.gameId, data.user.id, data.user.user_metadata.name);
+	});
+
+	onDestroy(() => {
+		socket.disconnect();
 	});
 
 	function addGuess(guess: string) {

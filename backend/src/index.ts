@@ -59,12 +59,16 @@ app.post("/games", (req, res) => {
 io.on("connection", (socket) => {
   socket.on("joinGame", (gameId, playerId, playerName) => {
     gameSocketController.joinGame(socket, gameId, playerId, playerName);
-  });
-  socket.on("leaveGame", (gameId, playerId) => {
-    gameSocketController.leaveGame(socket, gameId, playerId);
+    socket.data.playerId = playerId;
+    socket.data.gameId = gameId;
   });
   socket.on("guessAdded", (gameId, playerId, guess) => {
     gameSocketController.addGuess(gameId, playerId, guess);
+  });
+  socket.on("disconnecting", () => {
+    const playerId = socket.data.playerId;
+    const gameId = socket.data.gameId;
+    gameSocketController.leaveGame(socket, gameId, playerId);
   });
 });
 

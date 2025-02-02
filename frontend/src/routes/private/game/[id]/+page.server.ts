@@ -4,10 +4,12 @@ import { zod } from 'sveltekit-superforms/adapters';
 import { formSchema } from './schema';
 import { fail } from '@sveltejs/kit';
 
-export const load: PageServerLoad = async () => {
+export const load: PageServerLoad = async ({ locals }) => {
 	const form = await superValidate(zod(formSchema));
+	const user = locals.user!;
 	return {
-		form
+		form,
+		user
 	};
 };
 

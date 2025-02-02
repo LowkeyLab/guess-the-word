@@ -43,6 +43,7 @@ export class GameSocketController {
   }
 
   leaveGame(socket: Socket, gameId: string, playerId: string) {
+    console.info(`Player ${playerId} left game ${gameId}`);
     this.gamesManager.removePlayerFromGame(gameId, playerId);
     socket.leave(gameId);
   }

@@ -12,7 +12,10 @@ export interface ClientToServerEvents {
 
 export interface InterServerEvents {}
 
-export interface SocketData {}
+export interface SocketData {
+  playerId: string;
+  gameId: string;
+}
 
 export interface Player {
   id: string;
