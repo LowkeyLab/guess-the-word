@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { onDestroy, onMount } from 'svelte';
+	import { onMount } from 'svelte';
 	import type { PageProps } from './$types';
 	import GameFinishedBanner from './GameFinishedBanner.svelte';
 	import { GameState } from './GameState.svelte';
