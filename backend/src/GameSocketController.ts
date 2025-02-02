@@ -59,7 +59,6 @@ export class GameSocketController {
       } else {
         if (this.gamesManager.didRoundEnd(gameId)) {
           const guesses = this.gamesManager.getGuessesForCurrentRound(gameId);
-          console.log(guesses.size);
           this.server.to(gameId).emit(
             "roundEnded",
             Array.from(guesses.entries()).map(([playerId, guess]) => ({

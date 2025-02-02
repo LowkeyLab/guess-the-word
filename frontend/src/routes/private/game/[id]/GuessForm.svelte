@@ -13,7 +13,7 @@
 	<div class="flex gap-2">
 		<Input id="guess" type="text" bind:value={guess}></Input>
 		<Button
-			class="mx-auto w-32 text-lg"
+			class="mx-auto w-32"
 			disabled={!valid}
 			onclick={() => {
 				onSubmit(guess);
