@@ -4,7 +4,11 @@
 	const { ownGuess } = $props();
 </script>
 
-<p class="text-lg">
-	You guessed <span class="font-bold">{ownGuess}</span>
-</p>
-<Loader />
+<div>
+	<p>
+		You guessed <span class="font-bold">{ownGuess}</span>
+	</p>
+	<div class="mt-2">
+		<Loader />
+	</div>
+</div>

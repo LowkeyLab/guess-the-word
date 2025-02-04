@@ -19,7 +19,7 @@
 </script>
 
 <title>Guess The Word</title>
-<div class="mx-2 mt-2 box-border flex flex-col gap-6 sm:mx-auto sm:max-w-lg">
+<div class="mx-2 mt-2 box-border flex max-w-sm flex-col gap-6 sm:mx-auto">
 	<div>
 		<h1 class="text-4xl font-semibold sm:text-5xl">Guess The Word</h1>
 		<h2 class="pl-1 text-2xl font-light">Read each other's mind</h2>

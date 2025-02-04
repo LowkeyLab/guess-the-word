@@ -49,11 +49,9 @@
 
 <div class="box-border flex">
 	{#if gameState.state === 'finished'}
-		<div class="">
-			<GameFinishedBanner winningGuess={gameState.winningGuess} />
-		</div>
+		<GameFinishedBanner winningGuess={gameState.winningGuess} />
 	{:else if gameState.state === 'ongoing'}
-		<div class="flex flex-col gap-4">
+		<div class="flex flex-col gap-2">
 			<p>
 				You're playing against <span class="font-bold">{gameState.opponent?.name}</span>
 			</p>
