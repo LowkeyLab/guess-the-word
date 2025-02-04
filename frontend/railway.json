@@ -5,6 +5,7 @@
 		"buildCommand": "npm run build -w frontend"
 	},
 	"deploy": {
-		"startCommand": "npm run start -w frontend"
+		"startCommand": "npm run start -w frontend",
+		"healthcheckPath": "/"
 	}
 }
