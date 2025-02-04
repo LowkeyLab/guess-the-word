@@ -7,7 +7,7 @@
     "build": "tsc -b",
     "dev": "nodemon src/index.ts",
     "test": "jest",
-    "start": "npm run build && node build"
+    "start": "node build"
   },
   "author": "",
   "license": "AGPL-3.0-only",
