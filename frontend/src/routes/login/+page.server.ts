@@ -25,6 +25,6 @@ export const actions: Actions = {
 		if (error) {
 			return fail(500, { error: 'Authentication failed' });
 		}
-		redirect(303, '/');
+		redirect(303, '/private/');
 	}
 };

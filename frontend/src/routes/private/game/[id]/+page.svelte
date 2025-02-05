@@ -1,5 +1,4 @@
 <script lang="ts">
-	import { onMount } from 'svelte';
 	import type { PageProps } from './$types';
 	import GameFinishedBanner from './GameFinishedBanner.svelte';
 	import { GameState, Round } from './GameState.svelte';
@@ -12,6 +11,7 @@
 	const gameState: GameState = new GameState();
 	const { socket } = data;
 	socket.on('gameStarted', (players) => {
+		console.log('game started');
 		gameState.state = 'ongoing';
 		gameState.opponent = players.find((player) => player.id !== data.user!.id);
 	});
@@ -36,20 +36,20 @@
 		}
 	});
 
-	onMount(() => {
-		socket.emit('joinGame', data.gameId, data.user.id, data.user.user_metadata.name);
-	});
-
 	function addGuess(guess: string) {
 		gameState.rounds.at(-1)!.ownGuess = guess;
 		socket.emit('guessAdded', data.gameId, data.user!.id, guess);
 		gameState.waitingForOpponent = true;
 	}
+
+	function disconnectFromGame() {
+		socket.disconnect();
+	}
 </script>
 
 <div class="box-border flex">
 	{#if gameState.state === 'finished'}
-		<GameFinishedBanner winningGuess={gameState.winningGuess} />
+		<GameFinishedBanner winningGuess={gameState.winningGuess} onPlayingAgain={disconnectFromGame} />
 	{:else if gameState.state === 'ongoing'}
 		<div class="flex flex-col gap-2">
 			<p>

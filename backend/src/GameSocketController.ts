@@ -6,6 +6,7 @@ import {
   ServerToClientEvents,
   SocketData,
 } from "@common/index";
+import { isObject } from "node:util";
 
 type GameServer = Server<
   ClientToServerEvents,
@@ -36,6 +37,7 @@ export class GameSocketController {
     socket.join(gameId);
     const onGoingGame = this.gamesManager.getOngoingGame(gameId);
     if (onGoingGame) {
+      console.info(`Game ${gameId} started`);
       this.server
         .to(gameId)
         .emit("gameStarted", Array.from(onGoingGame.getPlayers()));
@@ -45,9 +47,13 @@ export class GameSocketController {
 
   leaveGame(socket: Socket, gameId: string, playerId: string) {
     console.info(`Player ${playerId} left game ${gameId}`);
-    this.gamesManager.removePlayerFromGame(gameId, playerId);
-    socket.leave(gameId);
-    this.server.to(gameId).emit("leftGame", playerId);
+    if (this.gamesManager.isGameOngoing(gameId)) {
+      console.debug("Game is ongoing, removing player from game");
+      this.gamesManager.removePlayerFromGame(gameId, playerId);
+      this.server.to(gameId).emit("leftGame", playerId);
+    } else {
+      console.debug("Both players left");
+    }
   }
 
   addGuess(gameId: string, playerId: string, guess: string) {
