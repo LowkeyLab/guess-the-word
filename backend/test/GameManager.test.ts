@@ -89,4 +89,15 @@ describe("GameController", () => {
 
     expect(sut.didRoundEnd(game.id)).toBe(true);
   });
+
+  test("when both players leave, delete the game", () => {
+    const game = sut.createGame();
+    sut.addPlayerToGame(game.id, "1", "player1");
+    sut.addPlayerToGame(game.id, "2", "player2");
+
+    sut.removePlayerFromGame(game.id, "1");
+    sut.removePlayerFromGame(game.id, "2");
+
+    expect(sut.isGameAvailable(game.id)).toBe(false);
+  });
 });

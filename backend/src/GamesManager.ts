@@ -61,6 +61,9 @@ export class GamesManager {
     }
     try {
       game.removePlayer(playerId);
+      if (game.numberOfPlayers() === 0) {
+        this.games.delete(gameId);
+      }
     } catch (error) {
       console.debug(`Error removing player from game: ${error}`);
     }
